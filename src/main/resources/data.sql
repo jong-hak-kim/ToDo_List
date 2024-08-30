@@ -1,0 +1,1 @@
+INSERT INTO USER VALUES('wfdrr@naver.com', '0000','','2024-08-30','user','false','');
