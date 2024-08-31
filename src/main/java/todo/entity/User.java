@@ -1,14 +1,17 @@
 package todo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Setter
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
@@ -32,4 +35,31 @@ public class User {
     @Column(name = "deactivation_date")
     private LocalDateTime deactivationDate;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ToDoList> toDoLists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    public void addToDoList(ToDoList toDoList){
+        toDoLists.add(toDoList);
+        toDoList.setUser(this);
+    }
+
+    public void removeToDoList(ToDoList toDoList){
+        toDoLists.remove(toDoList);
+        toDoList.setUser(null);
+    }
+
+    public void addComment(Comment comment){
+        comments.add(comment);
+        comment.setUser(this);
+    }
+
+    public void removeComment(Comment comment){
+        comments.remove(comment);
+        comment.setUser(null);
+    }
+
 }
+
