@@ -31,4 +31,20 @@ class UserTest {
         assertThat(saveUser2.getEmail()).isEqualTo(user2.getEmail());
     }
 
+    @Test
+    void findUserByEmail() throws Exception {
+        //given
+        User user1 = new User("user1@naver.com", "user1pass", "user1img", now(), "user", true, null);
+        User user2 = new User("user2@naver.com", "user2pass", "user2img", now().minusHours(2), "user", false, now().plusDays(2));
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        //when
+        User findUser1 = userRepository.findUserByEmail("user1@naver.com");
+
+        //then
+        assertThat(findUser1.getEmail()).isEqualTo(user1.getEmail());
+    }
+
+
 }
