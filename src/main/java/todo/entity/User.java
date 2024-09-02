@@ -20,8 +20,12 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
     @Column(name = "profile_img")
     private String profileImg;
+
+    @Column(name = "phone_number", nullable = false, unique = true)
+    private String phoneNumber;
 
     @Column(name = "signup_date", nullable = false)
     private LocalDateTime signupDate;
@@ -41,10 +45,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public User(String email, String password, String profileImg, LocalDateTime signupDate, String role, boolean isActive, LocalDateTime deactivationDate) {
+    public User(String email, String password, String profileImg, String phoneNumber, LocalDateTime signupDate, String role, boolean isActive, LocalDateTime deactivationDate) {
         this.email = email;
         this.password = password;
         this.profileImg = profileImg;
+        this.phoneNumber = phoneNumber;
         this.signupDate = signupDate;
         this.role = role;
         this.isActive = isActive;
