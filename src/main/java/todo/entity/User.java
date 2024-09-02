@@ -41,22 +41,32 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public void addToDoList(ToDoList toDoList){
+    public User(String email, String password, String profileImg, LocalDateTime signupDate, String role, boolean isActive, LocalDateTime deactivationDate) {
+        this.email = email;
+        this.password = password;
+        this.profileImg = profileImg;
+        this.signupDate = signupDate;
+        this.role = role;
+        this.isActive = isActive;
+        this.deactivationDate = deactivationDate;
+    }
+
+    public void addToDoList(ToDoList toDoList) {
         toDoLists.add(toDoList);
         toDoList.setUser(this);
     }
 
-    public void removeToDoList(ToDoList toDoList){
+    public void removeToDoList(ToDoList toDoList) {
         toDoLists.remove(toDoList);
         toDoList.setUser(null);
     }
 
-    public void addComment(Comment comment){
+    public void addComment(Comment comment) {
         comments.add(comment);
         comment.setUser(this);
     }
 
-    public void removeComment(Comment comment){
+    public void removeComment(Comment comment) {
         comments.remove(comment);
         comment.setUser(null);
     }
