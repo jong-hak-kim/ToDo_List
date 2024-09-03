@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import todo.common.enums.Role;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,8 +28,8 @@ public class User {
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(name = "signup_date", nullable = false)
-    private LocalDateTime signupDate;
+    @Column(name = "sign_up_date", nullable = false)
+    private LocalDateTime signUpDate;
 
     @Column(nullable = false)
     private String role;
@@ -45,15 +46,21 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public User(String email, String password, String profileImg, String phoneNumber, LocalDateTime signupDate, String role, boolean isActive, LocalDateTime deactivationDate) {
+    public User(String email, String password, String phoneNumber) {
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public User(String email, String password, String profileImg, String phoneNumber) {
         this.email = email;
         this.password = password;
         this.profileImg = profileImg;
         this.phoneNumber = phoneNumber;
-        this.signupDate = signupDate;
-        this.role = role;
-        this.isActive = isActive;
-        this.deactivationDate = deactivationDate;
+        this.signUpDate = LocalDateTime.now();
+        this.role = Role.USER.getDescription();
+        this.isActive = true;
+        this.deactivationDate = null;
     }
 
     public void addToDoList(ToDoList toDoList) {
