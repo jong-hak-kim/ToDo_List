@@ -19,8 +19,8 @@ class UserTest {
     @Test
     void addUser() throws Exception {
         //given
-        User user1 = new User("user1@naver.com", "user1pass", "user1img", "010-1111-1111", now(), "user", true, null);
-        User user2 = new User("user2@naver.com", "user2pass", "user2img", "010-2222-2222", now().minusHours(2), "user", false, now().plusDays(2));
+        User user1 = new User("user1@naver.com", "user1pass", "user1img", "010-1111-1111");
+        User user2 = new User("user2@naver.com", "user2pass", "user2img", "010-2222-2222");
 
         //when
         User saveUser1 = userRepository.save(user1);
@@ -34,8 +34,8 @@ class UserTest {
     @Test
     void findUserByEmail() throws Exception {
         //given
-        User user1 = new User("user1@naver.com", "user1pass", "user1img", "010-1111-1111", now(), "user", true, null);
-        User user2 = new User("user2@naver.com", "user2pass", "user2img", "010-2222-2222", now().minusHours(2), "user", false, now().plusDays(2));
+        User user1 = new User("user1@naver.com", "user1pass", "user1img", "010-1111-1111");
+        User user2 = new User("user2@naver.com", "user2pass", "user2img", "010-2222-2222");
         userRepository.save(user1);
         userRepository.save(user2);
 
