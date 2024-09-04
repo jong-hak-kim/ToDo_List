@@ -3,11 +3,15 @@ package todo.entity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import todo.repository.UserRepository;
 
 import static java.time.LocalDateTime.now;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -15,6 +19,9 @@ class UserTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Test
     void addUser() throws Exception {
@@ -44,6 +51,20 @@ class UserTest {
 
         //then
         assertThat(findUser1.getEmail()).isEqualTo(user1.getEmail());
+    }
+
+    @Test
+    void passwordEncode() throws Exception {
+        //given
+        String rawPassword = "user1111";
+        //when
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+
+        //then
+        assertAll(
+                () -> assertNotEquals(rawPassword, encodedPassword),
+                () -> assertTrue(passwordEncoder.matches(rawPassword, encodedPassword))
+        );
     }
 
 
