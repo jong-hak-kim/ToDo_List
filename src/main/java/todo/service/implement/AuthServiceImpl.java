@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.SignUpRequestDto;
@@ -17,6 +19,8 @@ import todo.service.AuthService;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder =
+            PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Autowired
     public AuthServiceImpl(UserRepository userRepository) {
@@ -33,9 +37,11 @@ public class AuthServiceImpl implements AuthService {
             boolean existedPhoneNumber = userRepository.existsByPhoneNumber(dto.getPhoneNumber());
             if (existedPhoneNumber) return ResponseMessage.EXIST_PHONE_NUMBER;
 
+            String encodedPassword = passwordEncoder.encode(dto.getPassword());
+
             User user = !dto.getProfileImg().isEmpty()
-                    ? new User(dto.getEmail(), dto.getPassword(), dto.getProfileImg(), dto.getPhoneNumber())
-                    : new User(dto.getEmail(), dto.getPassword(), dto.getPhoneNumber());
+                    ? new User(dto.getEmail(), encodedPassword, dto.getProfileImg(), dto.getPhoneNumber())
+                    : new User(dto.getEmail(), encodedPassword, dto.getPhoneNumber());
 
             userRepository.save(user);
             return ResponseMessage.SUCCESS;
