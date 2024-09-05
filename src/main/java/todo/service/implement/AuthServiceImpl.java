@@ -13,18 +13,19 @@ import todo.dto.response.ResponseDto;
 import todo.entity.User;
 import todo.repository.UserRepository;
 import todo.service.AuthService;
+import todo.util.PasswordUtil;
 
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder =
-            PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final PasswordUtil passwordUtil;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil) {
         this.userRepository = userRepository;
+        this.passwordUtil = passwordUtil;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
             boolean existedPhoneNumber = userRepository.existsByPhoneNumber(dto.getPhoneNumber());
             if (existedPhoneNumber) return ResponseMessage.EXIST_PHONE_NUMBER;
 
-            String encodedPassword = passwordEncoder.encode(dto.getPassword());
+            String encodedPassword = passwordUtil.encodePassword(dto.getPassword());
 
             User user = !dto.getProfileImg().isEmpty()
                     ? new User(dto.getEmail(), encodedPassword, dto.getProfileImg(), dto.getPhoneNumber())
