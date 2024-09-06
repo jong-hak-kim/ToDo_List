@@ -6,5 +6,6 @@ import todo.dto.response.ResponseDto;
 
 public interface AuthService {
 
-    public ResponseEntity<ResponseDto> userSignUp(SignUpRequestDto dto);
+    public ResponseEntity<ResponseDto> userSignUpAndSendEmail(SignUpRequestDto dto);
+    public ResponseEntity<ResponseDto> verifyEmail(String token);
 }

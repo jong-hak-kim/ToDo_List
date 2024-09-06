@@ -52,6 +52,7 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+
     public User(String email, String password, String profileImg, String phoneNumber) {
         this.email = email;
         this.password = password;
@@ -61,6 +62,10 @@ public class User {
         this.role = Role.USER.getDescription();
         this.isActive = true;
         this.deactivationDate = null;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public void addToDoList(ToDoList toDoList) {

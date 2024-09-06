@@ -29,8 +29,13 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content),
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
-    public ResponseEntity<ResponseDto> userSignUp(
+    public ResponseEntity<ResponseDto> userSignUpAndSendEmail(
             @Valid @RequestBody SignUpRequestDto signUpRequestDto) {
-        return authService.userSignUp(signUpRequestDto);
+        return authService.userSignUpAndSendEmail(signUpRequestDto);
+    }
+
+    @GetMapping("/email/verify")
+    public ResponseEntity<ResponseDto> verifyEmail(@RequestParam("token") String token) {
+        return authService.verifyEmail(token);
     }
 }

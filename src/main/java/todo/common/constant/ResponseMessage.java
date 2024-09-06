@@ -16,4 +16,13 @@ public interface ResponseMessage {
 
     public static final ResponseEntity<ResponseDto> DATABASE_ERROR
             = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto("DE", "Database Error"));
+
+    public static final ResponseEntity<ResponseDto> TOKEN_NOT_FOUND
+            = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto("TN", "Token Not Found"));
+
+    public static final ResponseEntity<ResponseDto> TOKEN_HAS_EXPIRED
+            = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("TE", "Token Has Expired"));
+
+    public static final ResponseEntity<ResponseDto> EMAIL_SEND_ERROR
+            = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto("EE", "Email Send Error"));
 }

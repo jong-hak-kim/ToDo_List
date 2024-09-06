@@ -34,7 +34,7 @@ class AuthServiceImplTest {
         dto.setPhoneNumber("010-1234-5678");
 
         //when
-        ResponseEntity<ResponseDto> responseEntity = authServiceImpl.userSignUp(dto);
+        ResponseEntity<ResponseDto> responseEntity = authServiceImpl.userSignUpAndSendEmail(dto);
         ResponseEntity<ResponseDto> existUserEmail = ResponseMessage.EXIST_USER_EMAIL;
 
         //then
@@ -53,7 +53,7 @@ class AuthServiceImplTest {
         dto.setProfileImg("profile.jpg");
         dto.setPhoneNumber("010-1111-1111");
         //when
-        ResponseEntity<ResponseDto> responseEntity = authServiceImpl.userSignUp(dto);
+        ResponseEntity<ResponseDto> responseEntity = authServiceImpl.userSignUpAndSendEmail(dto);
         ResponseEntity<ResponseDto> existPhoneNumber = ResponseMessage.EXIST_PHONE_NUMBER;
 
         //then
