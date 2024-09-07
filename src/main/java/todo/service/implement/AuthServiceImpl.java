@@ -4,20 +4,21 @@ import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailSendException;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
+import todo.dto.request.SignInRequestDto;
 import todo.dto.request.SignUpRequestDto;
 import todo.dto.response.ResponseDto;
+import todo.dto.response.SignInResponseDto;
 import todo.entity.User;
 import todo.entity.VerificationToken;
 import todo.repository.TokenRepository;
 import todo.repository.UserRepository;
 import todo.service.AuthService;
 import todo.service.EmailService;
+import todo.util.JwtTokenUtil;
 import todo.util.PasswordUtil;
 import todo.util.UUIDUtil;
 
@@ -84,6 +85,21 @@ public class AuthServiceImpl implements AuthService {
 
         return ResponseMessage.SUCCESS;
 
+    }
+
+    @Override
+    public ResponseEntity<? super SignInResponseDto> userSignIn(SignInRequestDto dto) {
+
+        User user = userRepository.findUserByEmail(dto.getEmail());
+
+
+        if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
+            String token = JwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+            return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
+        }
+
+
+        return ResponseMessage.LOGIN_FAILED;
     }
 
     private void sendVerificationEmail(String email) throws MessagingException {

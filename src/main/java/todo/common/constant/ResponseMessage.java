@@ -25,4 +25,7 @@ public interface ResponseMessage {
 
     public static final ResponseEntity<ResponseDto> EMAIL_SEND_ERROR
             = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto("EE", "Email Send Error"));
+
+    public static final ResponseEntity<ResponseDto> LOGIN_FAILED
+            = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("LF", "Login Failed"));
 }
