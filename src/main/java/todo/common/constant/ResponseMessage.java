@@ -3,6 +3,7 @@ package todo.common.constant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import todo.dto.response.ResponseDto;
+import todo.dto.response.SignInResponseDto;
 
 public interface ResponseMessage {
     public static final ResponseEntity<ResponseDto> SUCCESS
@@ -28,4 +29,10 @@ public interface ResponseMessage {
 
     public static final ResponseEntity<ResponseDto> LOGIN_FAILED
             = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("LF", "Login Failed"));
+
+    public static final ResponseEntity<? super SignInResponseDto> NOT_EXIST_USER
+            = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto("NU", "Not Existed User"));
+
+    public static final ResponseEntity<? super SignInResponseDto> IS_NOT_ACTIVATE
+            = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("NA", "Not Activate User"));
 }

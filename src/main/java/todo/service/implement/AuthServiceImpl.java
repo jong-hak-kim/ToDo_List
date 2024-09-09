@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.SignInRequestDto;
@@ -92,12 +93,18 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userRepository.findUserByEmail(dto.getEmail());
 
+        if(user == null){
+            return ResponseMessage.NOT_EXIST_USER;
+        }
+
+        if(!user.isActive()){
+            return ResponseMessage.IS_NOT_ACTIVATE;
+        }
 
         if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
             String token = JwtTokenUtil.generateToken(user.getEmail(), user.getRole());
             return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
         }
-
 
         return ResponseMessage.LOGIN_FAILED;
     }
