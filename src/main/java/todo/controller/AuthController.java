@@ -37,6 +37,11 @@ public class AuthController {
     }
 
     @GetMapping("/email/verify")
+    @Operation(summary = "이메일 인증", description = "유저 이메일 링크 인증 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "토큰 기간 만료"),
+            @ApiResponse(responseCode = "404", description = "인증 토큰 없음")
+    })
     public ResponseEntity<ResponseDto> verifyEmail(@RequestParam("token") String token) {
         return authService.verifyEmail(token);
     }
@@ -45,9 +50,11 @@ public class AuthController {
     @Operation(summary = "유저 로그인", description = "유저 로그인 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 완료", content = @Content),
-            @ApiResponse(responseCode = "401", description = "로그인 실패", content = @Content)
+            @ApiResponse(responseCode = "401", description = "로그인 실패", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "이메일 전송 실패", content = @Content)
     })
-    public ResponseEntity<? super SignInResponseDto> userSignIn(
+    public ResponseEntity<ResponseDto> userSignIn(
             @Valid @RequestBody SignInRequestDto signInRequestDto) {
         return authService.userSignIn(signInRequestDto);
     }

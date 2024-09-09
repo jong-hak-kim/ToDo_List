@@ -12,5 +12,5 @@ public interface AuthService {
 
     public ResponseEntity<ResponseDto> verifyEmail(String token);
 
-    public ResponseEntity<? super SignInResponseDto> userSignIn(SignInRequestDto dto);
+    public ResponseEntity<ResponseDto> userSignIn(SignInRequestDto dto);
 }

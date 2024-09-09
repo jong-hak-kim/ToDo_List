@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<? super SignInResponseDto> userSignIn(SignInRequestDto dto) {
+    public ResponseEntity<ResponseDto> userSignIn(SignInRequestDto dto) {
 
         User user = userRepository.findUserByEmail(dto.getEmail());
 
