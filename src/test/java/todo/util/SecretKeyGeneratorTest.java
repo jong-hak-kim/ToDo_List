@@ -12,6 +12,7 @@ class SecretKeyGeneratorTest {
     void secretKeyTest() throws Exception {
         //given
         SecretKey secretKey = SecretKeyGenerator.generateSecretKey();
+        System.out.println("secretKey = " + secretKey);
 
         //when
 
