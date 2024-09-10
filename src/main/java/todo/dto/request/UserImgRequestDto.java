@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ChangeUserImgRequestDto {
+public class UserImgRequestDto {
     @NotBlank
     private String email;
 

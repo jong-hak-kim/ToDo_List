@@ -68,6 +68,14 @@ public class User {
         isActive = active;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setProfileImg(String profileImg) {
+        this.profileImg = profileImg;
+    }
+
     public void addToDoList(ToDoList toDoList) {
         toDoLists.add(toDoList);
         toDoList.setUser(this);

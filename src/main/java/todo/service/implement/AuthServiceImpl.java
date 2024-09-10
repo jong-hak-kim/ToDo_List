@@ -1,5 +1,6 @@
 package todo.service.implement;
 
+import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.SignInRequestDto;
 import todo.dto.request.SignUpRequestDto;
+import todo.dto.request.UserImgRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.SignInResponseDto;
 import todo.entity.User;
@@ -22,6 +24,7 @@ import todo.service.EmailService;
 import todo.util.JwtTokenUtil;
 import todo.util.PasswordUtil;
 import todo.util.UUIDUtil;
+import todo.util.UserToken;
 
 @Service
 @Slf4j
@@ -29,13 +32,15 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final PasswordUtil passwordUtil;
+    private final JwtTokenUtil jwtTokenUtil;
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, TokenRepository tokenRepository, EmailService emailService) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil, TokenRepository tokenRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordUtil = passwordUtil;
+        this.jwtTokenUtil = jwtTokenUtil;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
     }
@@ -93,20 +98,43 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userRepository.findUserByEmail(dto.getEmail());
 
-        if(user == null){
+        if (user == null) {
             return ResponseMessage.NOT_EXIST_USER;
         }
 
-        if(!user.isActive()){
+        if (!user.isActive()) {
             return ResponseMessage.IS_NOT_ACTIVATE;
         }
 
         if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
-            String token = JwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+            String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
             return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
         }
 
         return ResponseMessage.LOGIN_FAILED;
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> updateUserImg(UserToken token, UserImgRequestDto dto) {
+
+        if (token == null){
+            return ResponseMessage.TOKEN_NOT_FOUND;
+        }
+
+        User user = userRepository.findUserByEmail(dto.getEmail());
+        boolean existedUserEmail = userRepository.existsByEmail(token.getEmail());
+        if(!existedUserEmail || user == null){
+            return ResponseMessage.NOT_EXIST_USER;
+        }
+
+        if (!user.isActive()) {
+            return ResponseMessage.IS_NOT_ACTIVATE;
+        }
+
+        user.setProfileImg(dto.getImage());
+        userRepository.save(user);
+
+        return ResponseMessage.SUCCESS;
     }
 
     private void sendVerificationEmail(String email) throws MessagingException {

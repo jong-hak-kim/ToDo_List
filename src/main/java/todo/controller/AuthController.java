@@ -5,15 +5,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import todo.dto.request.SignInRequestDto;
 import todo.dto.request.SignUpRequestDto;
+import todo.dto.request.UserImgRequestDto;
 import todo.dto.response.ResponseDto;
-import todo.dto.response.SignInResponseDto;
 import todo.service.AuthService;
+import todo.util.UserToken;
 
+@Slf4j
 @RestController
 public class AuthController {
 
@@ -57,5 +61,18 @@ public class AuthController {
     public ResponseEntity<ResponseDto> userSignIn(
             @Valid @RequestBody SignInRequestDto signInRequestDto) {
         return authService.userSignIn(signInRequestDto);
+    }
+
+    @PostMapping("/profile_img")
+    @Operation(summary = "프로필 사진 변경", description = "프로필 사진 변경 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 사진 변경 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> updateUserImg(
+            @AuthenticationPrincipal UserToken userToken,
+            @Valid @RequestBody UserImgRequestDto userImgRequestDto) {
+        return authService.updateUserImg(userToken, userImgRequestDto);
     }
 }

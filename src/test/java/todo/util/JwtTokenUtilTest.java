@@ -10,9 +10,11 @@ class JwtTokenUtilTest {
     @Test
     void generateTokenTest() throws Exception {
 
+        final JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
+
         //given
-        String token = JwtTokenUtil.generateToken("whdgkr9070@naver.com", "user");
-        Claims claimsFromToken = JwtTokenUtil.getClaimsFromToken(token);
+        String token = jwtTokenUtil.generateToken("whdgkr9070@naver.com", "user");
+        Claims claimsFromToken = jwtTokenUtil.getClaimsFromToken(token);
         //when
 
         //then

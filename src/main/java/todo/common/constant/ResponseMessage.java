@@ -34,4 +34,7 @@ public interface ResponseMessage {
 
     public static final ResponseEntity<ResponseDto> IS_NOT_ACTIVATE
             = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("NA", "Not Activate User"));
+
+    public static final ResponseEntity<ResponseDto> UNAUTHORIZED_TOKEN
+            = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("UT", "Unauthorized Token"));
 }
