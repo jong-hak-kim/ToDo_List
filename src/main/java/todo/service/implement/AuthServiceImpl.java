@@ -1,15 +1,14 @@
 package todo.service.implement;
 
-import io.jsonwebtoken.Claims;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
+import todo.dto.request.ResetPwdRequestDto;
 import todo.dto.request.SignInRequestDto;
 import todo.dto.request.SignUpRequestDto;
 import todo.dto.request.UserImgRequestDto;
@@ -57,9 +56,7 @@ public class AuthServiceImpl implements AuthService {
 
             String encodedPassword = passwordUtil.encodePassword(dto.getPassword());
 
-            User user = !dto.getProfileImg().isEmpty()
-                    ? new User(dto.getEmail(), encodedPassword, dto.getProfileImg(), dto.getPhoneNumber())
-                    : new User(dto.getEmail(), encodedPassword, dto.getPhoneNumber());
+            User user = !dto.getProfileImg().isEmpty() ? new User(dto.getEmail(), encodedPassword, dto.getProfileImg(), dto.getPhoneNumber()) : new User(dto.getEmail(), encodedPassword, dto.getPhoneNumber());
 
             user.setActive(false);
             sendVerificationEmail(dto.getEmail());
@@ -117,13 +114,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<ResponseDto> updateUserImg(UserToken token, UserImgRequestDto dto) {
 
-        if (token == null){
+        if (token == null) {
             return ResponseMessage.TOKEN_NOT_FOUND;
         }
 
         User user = userRepository.findUserByEmail(dto.getEmail());
         boolean existedUserEmail = userRepository.existsByEmail(token.getEmail());
-        if(!existedUserEmail || user == null){
+        if (!existedUserEmail || user == null) {
             return ResponseMessage.NOT_EXIST_USER;
         }
 
@@ -137,14 +134,15 @@ public class AuthServiceImpl implements AuthService {
         return ResponseMessage.SUCCESS;
     }
 
+
     private void sendVerificationEmail(String email) throws MessagingException {
 
         String token = UUIDUtil.generateUUID();
+
         String verificationUrl = "http://127.0.0.1:8080/email/verify?token=" + token;
-
         saveVerificationToken(token, email);
+        emailService.sendSignUpEmail(email, verificationUrl);
 
-        emailService.sendTokenEmail(email, verificationUrl);
     }
 
     private void saveVerificationToken(String token, String email) {

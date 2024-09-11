@@ -16,4 +16,6 @@ public interface AuthService {
     public ResponseEntity<ResponseDto> userSignIn(SignInRequestDto dto);
 
     public ResponseEntity<ResponseDto> updateUserImg(UserToken token, UserImgRequestDto dto);
+
+
 }

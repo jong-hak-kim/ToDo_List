@@ -11,4 +11,8 @@ public class UUIDUtil {
     public static String generateUUID() {
         return UUID.randomUUID().toString();
     }
+
+    public static String generatePwdUUID() {
+        return UUID.randomUUID().toString().replace("-","").substring(0, 12);
+    }
 }
