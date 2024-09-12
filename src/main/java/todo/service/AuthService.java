@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import todo.dto.request.SignInRequestDto;
 import todo.dto.request.SignUpRequestDto;
 import todo.dto.request.UserImgRequestDto;
+import todo.dto.request.UserPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.util.UserToken;
 
@@ -17,5 +18,6 @@ public interface AuthService {
 
     public ResponseEntity<ResponseDto> updateUserImg(UserToken token, UserImgRequestDto dto);
 
+    public ResponseEntity<ResponseDto> updatePwd(UserToken token, UserPwdRequestDto dto);
 
 }

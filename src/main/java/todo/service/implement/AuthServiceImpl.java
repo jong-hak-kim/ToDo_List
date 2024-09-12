@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.ResetPwdRequestDto;
-import todo.dto.request.SignInRequestDto;
-import todo.dto.request.SignUpRequestDto;
-import todo.dto.request.UserImgRequestDto;
+import todo.dto.request.*;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.SignInResponseDto;
 import todo.entity.User;
@@ -130,6 +127,32 @@ public class AuthServiceImpl implements AuthService {
 
         user.setProfileImg(dto.getImage());
         userRepository.save(user);
+
+        return ResponseMessage.SUCCESS;
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> updatePwd(UserToken token, UserPwdRequestDto dto) {
+        try {
+
+            log.info("Received token: {}", token);
+            if (token == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(token.getEmail());
+            if (passwordUtil.matches(user.getPassword(), dto.getOriginalPwd())) {
+                return ResponseMessage.PASSWORD_CURRENT_INVALID;
+            }
+
+            String newPassword = passwordUtil.encodePassword(dto.getNewPwd());
+            user.setPassword(newPassword);
+
+            userRepository.save(user);
+        } catch (DataAccessException exception) {
+            log.error("Database error occurred while checking user details", exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
 
         return ResponseMessage.SUCCESS;
     }

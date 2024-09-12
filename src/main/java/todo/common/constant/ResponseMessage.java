@@ -37,4 +37,8 @@ public interface ResponseMessage {
 
     public static final ResponseEntity<ResponseDto> UNAUTHORIZED_TOKEN
             = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("UT", "Unauthorized Token"));
+
+    public static final ResponseEntity<ResponseDto> PASSWORD_CURRENT_INVALID
+            = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("PI", "Current Password Invalid"));
+
 }
