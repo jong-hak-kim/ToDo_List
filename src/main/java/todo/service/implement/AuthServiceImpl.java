@@ -72,17 +72,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<ResponseDto> verifyEmail(String token) {
-        VerificationToken verificationToken = tokenRepository.findByToken(token);
-        if (verificationToken == null) {
-            return ResponseMessage.TOKEN_NOT_FOUND;
+        try {
+
+
+            VerificationToken verificationToken = tokenRepository.findByToken(token);
+            if (verificationToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            if (verificationToken.isExpired()) {
+                return ResponseMessage.TOKEN_HAS_EXPIRED;
+            }
+
+            activateUser(verificationToken.getEmail());
+        } catch (DataAccessException exception) {
+            log.error("Database error occurred while checking user details", exception);
+            return ResponseMessage.DATABASE_ERROR;
         }
-
-        if (verificationToken.isExpired()) {
-            return ResponseMessage.TOKEN_HAS_EXPIRED;
-        }
-
-        activateUser(verificationToken.getEmail());
-
         return ResponseMessage.SUCCESS;
 
     }
@@ -90,44 +96,54 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<ResponseDto> userSignIn(SignInRequestDto dto) {
 
-        User user = userRepository.findUserByEmail(dto.getEmail());
+        try {
 
-        if (user == null) {
-            return ResponseMessage.NOT_EXIST_USER;
+            User user = userRepository.findUserByEmail(dto.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            if (!user.isActive()) {
+                return ResponseMessage.IS_NOT_ACTIVATE;
+            }
+
+            if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
+                String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+                return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
+            }
+        } catch (DataAccessException exception) {
+            log.error("Database error occurred while checking user details", exception);
+            return ResponseMessage.DATABASE_ERROR;
         }
-
-        if (!user.isActive()) {
-            return ResponseMessage.IS_NOT_ACTIVATE;
-        }
-
-        if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
-            String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
-            return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
-        }
-
         return ResponseMessage.LOGIN_FAILED;
     }
 
     @Override
     public ResponseEntity<ResponseDto> updateUserImg(UserToken token, UserImgRequestDto dto) {
+        try {
 
-        if (token == null) {
-            return ResponseMessage.TOKEN_NOT_FOUND;
+
+            if (token == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(dto.getEmail());
+            boolean existedUserEmail = userRepository.existsByEmail(token.getEmail());
+            if (!existedUserEmail || user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            if (!user.isActive()) {
+                return ResponseMessage.IS_NOT_ACTIVATE;
+            }
+
+            user.setProfileImg(dto.getImage());
+            userRepository.save(user);
+        } catch (DataAccessException exception) {
+            log.error("Database error occurred while checking user details", exception);
+            return ResponseMessage.DATABASE_ERROR;
         }
-
-        User user = userRepository.findUserByEmail(dto.getEmail());
-        boolean existedUserEmail = userRepository.existsByEmail(token.getEmail());
-        if (!existedUserEmail || user == null) {
-            return ResponseMessage.NOT_EXIST_USER;
-        }
-
-        if (!user.isActive()) {
-            return ResponseMessage.IS_NOT_ACTIVATE;
-        }
-
-        user.setProfileImg(dto.getImage());
-        userRepository.save(user);
-
         return ResponseMessage.SUCCESS;
     }
 
