@@ -39,15 +39,6 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public Claims getClaimsFromToken(String token) {
-        return Jwts
-                .parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
     public UserToken validate(String token) {
 
         String email = "";
@@ -69,7 +60,4 @@ public class JwtTokenUtil {
         return new UserToken(email, role);
     }
 
-    public static String trimWhitespaceToken(String token) {
-        return token.replace("Bearer", "").trim();
-    }
 }
