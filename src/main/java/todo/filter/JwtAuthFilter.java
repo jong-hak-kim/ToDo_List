@@ -1,5 +1,6 @@
 package todo.filter;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,6 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UserToken userToken = jwtTokenUtil.validate(jwt);
 
             if (userToken == null) {
+                log.error("Invalid JWT Token");
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -56,8 +58,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             securityContext.setAuthentication(authenticationToken);
 
             SecurityContextHolder.setContext(securityContext);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (ExpiredJwtException exception) {
+            log.error("Expired JWT Token", exception);
         }
         filterChain.doFilter(request, response);
     }
