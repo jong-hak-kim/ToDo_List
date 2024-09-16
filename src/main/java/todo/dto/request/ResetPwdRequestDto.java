@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 public class ResetPwdRequestDto {
 
     @NotBlank
-    String email;
+    private String email;
 }

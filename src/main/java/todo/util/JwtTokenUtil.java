@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtTokenUtil {
 
@@ -43,6 +45,7 @@ public class JwtTokenUtil {
 
         String email = "";
         String role = "";
+        log.info(token);
 
         try {
             Claims claims = Jwts
@@ -55,6 +58,7 @@ public class JwtTokenUtil {
             email = "" + claims.get("email");
             role = "" + claims.get("role");
         } catch (Exception exception) {
+            exception.printStackTrace();
             return null;
         }
         return new UserToken(email, role);

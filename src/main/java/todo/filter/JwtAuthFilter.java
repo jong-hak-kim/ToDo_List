@@ -72,6 +72,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return null;
         }
 
-        return token.replace("bearer", "").trim();
+        return token.replace("Bearer", "").trim();
     }
 }

@@ -48,6 +48,17 @@ public class ToDoList {
             , orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    public ToDoList(User user, String title, String content, LocalDateTime dueDate, String priority, String repeatInterval) {
+        this.user = user;
+        this.title = title;
+        this.content = content;
+        this.dueDate = dueDate;
+        this.creationDate = LocalDateTime.now();
+        this.completionStatus = false;
+        this.priority = priority;
+        this.repeatInterval = repeatInterval;
+    }
+
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setToDoList(this);

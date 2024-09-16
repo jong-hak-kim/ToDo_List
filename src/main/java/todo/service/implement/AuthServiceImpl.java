@@ -110,6 +110,7 @@ public class AuthServiceImpl implements AuthService {
 
             if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
                 String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+                log.info("generate Token : " + token);
                 return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
             }
         } catch (DataAccessException exception) {
