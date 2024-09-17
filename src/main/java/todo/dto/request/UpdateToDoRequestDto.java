@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class AddToDoRequestDto {
+public class UpdateToDoRequestDto {
+
+    private Long listId;
 
     @NotBlank
     private String title;
@@ -27,3 +29,4 @@ public class AddToDoRequestDto {
     private String repeatInterval;
 
 }
+

@@ -59,6 +59,26 @@ public class ToDoList {
         this.repeatInterval = repeatInterval;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public void setRepeatInterval(String repeatInterval) {
+        this.repeatInterval = repeatInterval;
+    }
+
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setToDoList(this);
