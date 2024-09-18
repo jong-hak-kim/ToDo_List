@@ -79,6 +79,10 @@ public class ToDoList {
         this.repeatInterval = repeatInterval;
     }
 
+    public void setCompletionStatus(boolean completionStatus) {
+        this.completionStatus = completionStatus;
+    }
+
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setToDoList(this);

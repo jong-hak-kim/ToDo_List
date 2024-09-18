@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.AddToDoRequestDto;
+import todo.dto.request.CompleteToDoRequestDto;
 import todo.dto.request.UpdateToDoRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.entity.ToDoList;
@@ -30,7 +31,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> AddTodo(UserToken userToken, AddToDoRequestDto dto) {
+    public ResponseEntity<ResponseDto> addToDo(UserToken userToken, AddToDoRequestDto dto) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -59,7 +60,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> UpdateTodo(UserToken userToken, UpdateToDoRequestDto dto) {
+    public ResponseEntity<ResponseDto> updateToDo(UserToken userToken, UpdateToDoRequestDto dto) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -88,6 +89,37 @@ public class TodoServiceImpl implements TodoService {
 
         return ResponseMessage.SUCCESS;
     }
+
+    @Override
+    public ResponseEntity<ResponseDto> completeToDo(UserToken userToken, CompleteToDoRequestDto dto) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if(user == null){
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            if (!user.isActive()) {
+                return ResponseMessage.IS_NOT_ACTIVATE;
+            }
+
+            ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getListId());
+            toDoList.setCompletionStatus(true);
+
+            toDoListRepository.save(toDoList);
+
+        }catch (DataAccessException exception) {
+            log.error("Database error occurred while checking user details", exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
+
+        return ResponseMessage.SUCCESS;
+    }
+
 
     private void updateNonNullField(UpdateToDoRequestDto dto, ToDoList toDoList) {
         Optional.ofNullable(dto.getTitle()).ifPresent(toDoList::setTitle);
