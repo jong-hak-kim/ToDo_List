@@ -5,10 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.AddToDoRequestDto;
-import todo.dto.request.CancelCompleteToDoRequestDto;
-import todo.dto.request.CompleteToDoRequestDto;
-import todo.dto.request.UpdateToDoRequestDto;
+import todo.dto.request.*;
 import todo.dto.response.ResponseDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
@@ -40,7 +37,7 @@ public class TodoServiceImpl implements TodoService {
 
             User user = userRepository.findUserByEmail(userToken.getEmail());
 
-            if(user == null){
+            if (user == null) {
                 return ResponseMessage.NOT_EXIST_USER;
             }
 
@@ -69,7 +66,7 @@ public class TodoServiceImpl implements TodoService {
 
             User user = userRepository.findUserByEmail(userToken.getEmail());
 
-            if(user == null){
+            if (user == null) {
                 return ResponseMessage.NOT_EXIST_USER;
             }
 
@@ -100,7 +97,7 @@ public class TodoServiceImpl implements TodoService {
 
             User user = userRepository.findUserByEmail(userToken.getEmail());
 
-            if(user == null){
+            if (user == null) {
                 return ResponseMessage.NOT_EXIST_USER;
             }
 
@@ -109,11 +106,16 @@ public class TodoServiceImpl implements TodoService {
             }
 
             ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getListId());
+
+            if (toDoList == null) {
+                return ResponseMessage.NOT_EXIST_TODO;
+            }
+
             toDoList.setCompletionStatus(true);
 
             toDoListRepository.save(toDoList);
 
-        }catch (DataAccessException exception) {
+        } catch (DataAccessException exception) {
             log.error("Database error occurred while checking user details", exception);
             return ResponseMessage.DATABASE_ERROR;
         }
@@ -130,7 +132,7 @@ public class TodoServiceImpl implements TodoService {
 
             User user = userRepository.findUserByEmail(userToken.getEmail());
 
-            if(user == null){
+            if (user == null) {
                 return ResponseMessage.NOT_EXIST_USER;
             }
 
@@ -139,11 +141,48 @@ public class TodoServiceImpl implements TodoService {
             }
 
             ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getListId());
+
+            if (toDoList == null) {
+                return ResponseMessage.NOT_EXIST_TODO;
+            }
+
             toDoList.setCompletionStatus(false);
 
             toDoListRepository.save(toDoList);
 
-        }catch (DataAccessException exception) {
+        } catch (DataAccessException exception) {
+            log.error("Database error occurred while checking user details", exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
+
+        return ResponseMessage.SUCCESS;
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveToDoRequestDto dto) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            if (!user.isActive()) {
+                return ResponseMessage.IS_NOT_ACTIVATE;
+            }
+
+            ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getListId());
+
+            if (toDoList == null) {
+                return ResponseMessage.NOT_EXIST_TODO;
+            }
+
+            toDoListRepository.delete(toDoList);
+        } catch (DataAccessException exception) {
             log.error("Database error occurred while checking user details", exception);
             return ResponseMessage.DATABASE_ERROR;
         }

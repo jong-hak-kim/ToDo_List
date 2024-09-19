@@ -41,4 +41,6 @@ public interface ResponseMessage {
     public static final ResponseEntity<ResponseDto> PASSWORD_CURRENT_INVALID
             = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto("PI", "Current Password Invalid"));
 
+    public static final ResponseEntity<ResponseDto> NOT_EXIST_TODO
+            = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto("NT", "Not Exist ToDoList"));
 }
