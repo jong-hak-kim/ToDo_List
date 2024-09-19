@@ -70,7 +70,7 @@ public class ToDoController {
     }
 
     @PostMapping("/todo/cancel")
-    @Operation(summary = "목표 완료", description = "목표 완료 API")
+    @Operation(summary = "목표 완료 취소", description = "목표 완료 취소 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "투두 리스트 작성 완료", content = @Content),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
