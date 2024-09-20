@@ -47,6 +47,8 @@ public class TodoServiceImpl implements TodoService {
 
             ToDoList todoList = new ToDoList(user, dto.getTitle(), dto.getContent(), dto.getDueDate(), dto.getPriority(), dto.getRepeatInterval());
 
+            user.addToDoList(todoList);
+
             toDoListRepository.save(todoList);
 
         } catch (DataAccessException exception) {
@@ -180,6 +182,8 @@ public class TodoServiceImpl implements TodoService {
             if (toDoList == null) {
                 return ResponseMessage.NOT_EXIST_TODO;
             }
+
+            user.removeToDoList(toDoList);
 
             toDoListRepository.delete(toDoList);
         } catch (DataAccessException exception) {
