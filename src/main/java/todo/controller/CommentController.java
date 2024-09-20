@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import todo.dto.request.AddCommentRequestDto;
+import todo.dto.request.ModifyCommentRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.service.CommentService;
 import todo.util.UserToken;
@@ -38,5 +39,19 @@ public class CommentController {
             @AuthenticationPrincipal UserToken userToken,
             @Valid @RequestBody AddCommentRequestDto addCommentRequestDto) {
         return commentService.addComment(userToken, addCommentRequestDto);
+    }
+
+    @PostMapping("/todo/comment/modify")
+    @Operation(summary = "댓글 수정", description = "댓글 수정 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "댓글 수정 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> modifyComment(
+            @AuthenticationPrincipal UserToken userToken,
+            @Valid @RequestBody ModifyCommentRequestDto modifyCommentRequestDto) {
+        return commentService.modifyComment(userToken, modifyCommentRequestDto);
     }
 }

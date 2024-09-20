@@ -42,6 +42,10 @@ public class Comment {
         this.toDoList = toDoList;
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Comment(ToDoList toDoList, User user, String content) {
         this.toDoList = toDoList;
         this.user = user;
