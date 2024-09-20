@@ -17,6 +17,9 @@ public class Comment {
     @Column(name = "comment_id", nullable = false)
     private Long commentId;
 
+    @Column(name = "parent_comment_id")
+    private Long parentCommentId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "list_id", nullable = false)
     private ToDoList toDoList;
@@ -37,5 +40,12 @@ public class Comment {
 
     public void setToDoList(ToDoList toDoList) {
         this.toDoList = toDoList;
+    }
+
+    public Comment(ToDoList toDoList, User user, String content) {
+        this.toDoList = toDoList;
+        this.user = user;
+        this.content = content;
+        this.creationDate = LocalDateTime.now();
     }
 }
