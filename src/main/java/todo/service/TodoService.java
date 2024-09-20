@@ -9,7 +9,7 @@ public interface TodoService {
 
     public ResponseEntity<ResponseDto> addToDo(UserToken userToken, AddToDoRequestDto dto);
 
-    public ResponseEntity<ResponseDto> updateToDo(UserToken userToken, UpdateToDoRequestDto dto);
+    public ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, ModifyToDoRequestDto dto);
 
     public ResponseEntity<ResponseDto> completeToDo(UserToken userToken, CompleteToDoRequestDto dto);
 

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class UpdateToDoRequestDto {
+public class ModifyToDoRequestDto {
 
     private Long listId;
 

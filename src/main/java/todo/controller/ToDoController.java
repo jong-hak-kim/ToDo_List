@@ -25,9 +25,9 @@ public class ToDoController {
     }
 
     @PostMapping("/todo")
-    @Operation(summary = "투두리스트 작성", description = "투두 리스트 작성 API")
+    @Operation(summary = "할 일 작성", description = "할 일 작성 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "투두 리스트 작성 완료", content = @Content),
+            @ApiResponse(responseCode = "200", description = "할 일 작성 완료", content = @Content),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
@@ -39,30 +39,30 @@ public class ToDoController {
     }
 
     @PostMapping("/todo/update")
-    @Operation(summary = "투두리스트 수정", description = "투두 리스트 수정 API")
+    @Operation(summary = "할 일 수정", description = "할 일 수정 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "투두 리스트 작성 완료", content = @Content),
+            @ApiResponse(responseCode = "200", description = "할 일 작성 완료", content = @Content),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
-    public ResponseEntity<ResponseDto> updateToDo(
+    public ResponseEntity<ResponseDto> modifyToDo(
             @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody UpdateToDoRequestDto updateToDoRequestDto) {
-        return todoService.updateToDo(userToken, updateToDoRequestDto);
+            @Valid @RequestBody ModifyToDoRequestDto modifyToDoRequestDto) {
+        return todoService.modifyToDo(userToken, modifyToDoRequestDto);
     }
 
     @PostMapping("/todo/complete")
-    @Operation(summary = "할 일 완료 처리", description = "할 일 완료 처리 API")
+    @Operation(summary = "할 일 상태 완료 처리", description = "할 일 상태 완료 처리 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "할 일 완료 처리", content = @Content),
+            @ApiResponse(responseCode = "200", description = "할 일 상태 완료 처리", content = @Content),
             @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
     public ResponseEntity<ResponseDto> completeToDo(
             @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody CompleteToDoRequestDto completeToDoDto){
+            @Valid @RequestBody CompleteToDoRequestDto completeToDoDto) {
         return todoService.completeToDo(userToken, completeToDoDto);
     }
 
@@ -76,7 +76,7 @@ public class ToDoController {
     })
     public ResponseEntity<ResponseDto> cancelCompleteToDo(
             @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody CancelCompleteToDoRequestDto cancelCompleteToDoRequestDto){
+            @Valid @RequestBody CancelCompleteToDoRequestDto cancelCompleteToDoRequestDto) {
         return todoService.cancelCompleteToDo(userToken, cancelCompleteToDoRequestDto);
     }
 
@@ -90,7 +90,7 @@ public class ToDoController {
     })
     public ResponseEntity<ResponseDto> removeToDo(
             @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody RemoveToDoRequestDto removeToDoRequestDto){
+            @Valid @RequestBody RemoveToDoRequestDto removeToDoRequestDto) {
         return todoService.removeToDo(userToken, removeToDoRequestDto);
     }
 

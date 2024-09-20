@@ -60,7 +60,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> updateToDo(UserToken userToken, UpdateToDoRequestDto dto) {
+    public ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, ModifyToDoRequestDto dto) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -194,7 +194,7 @@ public class TodoServiceImpl implements TodoService {
         return ResponseMessage.SUCCESS;
     }
 
-    private void updateNonNullField(UpdateToDoRequestDto dto, ToDoList toDoList) {
+    private void updateNonNullField(ModifyToDoRequestDto dto, ToDoList toDoList) {
         Optional.ofNullable(dto.getTitle()).ifPresent(toDoList::setTitle);
         Optional.ofNullable(dto.getContent()).ifPresent(toDoList::setContent);
         Optional.ofNullable(dto.getPriority()).ifPresent(toDoList::setPriority);
