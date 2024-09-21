@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.*;
 import todo.dto.response.ResponseDto;
@@ -160,6 +161,7 @@ public class TodoServiceImpl implements TodoService {
         return ResponseMessage.SUCCESS;
     }
 
+    @Transactional
     @Override
     public ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveToDoRequestDto dto) {
         try {

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.AddCommentRequestDto;
 import todo.dto.request.ModifyCommentRequestDto;
@@ -18,6 +19,8 @@ import todo.repository.ToDoListRepository;
 import todo.repository.UserRepository;
 import todo.service.CommentService;
 import todo.util.UserToken;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -59,14 +62,20 @@ public class CommentServiceImpl implements CommentService {
                 return ResponseMessage.NOT_EXIST_TODO;
             }
 
-            Comment comment = new Comment(toDoList, user, dto.getContent());
+            Comment comment = new Comment(toDoList, user, dto.getParentCommentId(), dto.getContent());
+
+            if (dto.getParentCommentId() != null
+                    && !commentRepository.existsCommentByCommentId(dto.getParentCommentId())) {
+                return ResponseMessage.NOT_EXIST_COMMENT;
+            }
 
             user.addComment(comment);
             toDoList.addComment(comment);
 
             commentRepository.save(comment);
 
-        } catch (DataAccessException exception) {
+        } catch (
+                DataAccessException exception) {
 
             log.error("Database error occurred while checking user details", exception);
             return ResponseMessage.DATABASE_ERROR;
@@ -113,6 +122,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseDto> removeComment(UserToken userToken, RemoveCommentRequestDto dto) {
         try {
 
@@ -136,6 +146,16 @@ public class CommentServiceImpl implements CommentService {
                 return ResponseMessage.NOT_EXIST_COMMENT;
             }
 
+            user.removeComment(comment);
+            comment.getToDoList().removeComment(comment);
+
+            List<Comment> childComments = commentRepository.findCommentsByParentCommentId(dto.getCommentId());
+            for (Comment child : childComments) {
+                user.removeComment(child);
+                child.getToDoList().removeComment(child);
+            }
+
+            commentRepository.deleteCommentsByParentCommentId(dto.getCommentId());
             commentRepository.delete(comment);
 
         } catch (DataAccessException exception) {

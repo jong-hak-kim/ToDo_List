@@ -46,9 +46,10 @@ public class Comment {
         this.content = content;
     }
 
-    public Comment(ToDoList toDoList, User user, String content) {
+    public Comment(ToDoList toDoList, User user, Long parentCommentId, String content) {
         this.toDoList = toDoList;
         this.user = user;
+        this.parentCommentId = parentCommentId;
         this.content = content;
         this.creationDate = LocalDateTime.now();
     }
