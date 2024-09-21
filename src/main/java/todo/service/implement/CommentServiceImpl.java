@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.AddCommentRequestDto;
 import todo.dto.request.ModifyCommentRequestDto;
+import todo.dto.request.RemoveCommentRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.entity.Comment;
 import todo.entity.ToDoList;
@@ -108,6 +109,39 @@ public class CommentServiceImpl implements CommentService {
             return ResponseMessage.DATABASE_ERROR;
         }
 
+        return ResponseMessage.SUCCESS;
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> removeComment(UserToken userToken, RemoveCommentRequestDto dto) {
+        try {
+
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            if (!user.isActive()) {
+                return ResponseMessage.IS_NOT_ACTIVATE;
+            }
+
+            Comment comment = commentRepository.findCommentByCommentId(dto.getCommentId());
+
+            if (comment == null) {
+                return ResponseMessage.NOT_EXIST_COMMENT;
+            }
+
+            commentRepository.delete(comment);
+
+        } catch (DataAccessException exception) {
+            log.error("Database error occurred while checking user details", exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
         return ResponseMessage.SUCCESS;
     }
 }
