@@ -17,6 +17,8 @@ import todo.service.EmailService;
 import todo.util.PasswordUtil;
 import todo.util.UUIDUtil;
 
+import static todo.common.constant.ErrorMessage.MESSAGING_ERROR;
+
 @Slf4j
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -84,7 +86,7 @@ public class EmailServiceImpl implements EmailService {
             return ResponseMessage.SUCCESS;
 
         } catch (MessagingException exception) {
-            log.error("error occurred while sending the email", exception);
+            log.error(MESSAGING_ERROR, exception);
             return ResponseMessage.EMAIL_SEND_ERROR;
         }
     }

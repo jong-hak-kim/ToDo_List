@@ -22,6 +22,9 @@ import todo.util.PasswordUtil;
 import todo.util.UUIDUtil;
 import todo.util.UserToken;
 
+import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
+import static todo.common.constant.ErrorMessage.MESSAGING_ERROR;
+
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
@@ -62,10 +65,10 @@ public class AuthServiceImpl implements AuthService {
             return ResponseMessage.SUCCESS;
 
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         } catch (MessagingException exception) {
-            log.error("error occurred while sending the email", exception);
+            log.error(MESSAGING_ERROR, exception);
             return ResponseMessage.EMAIL_SEND_ERROR;
         }
     }
@@ -86,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
 
             activateUser(verificationToken.getEmail());
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
         return ResponseMessage.SUCCESS;
@@ -114,7 +117,7 @@ public class AuthServiceImpl implements AuthService {
                 return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
             }
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
         return ResponseMessage.LOGIN_FAILED;
@@ -142,7 +145,7 @@ public class AuthServiceImpl implements AuthService {
             user.setProfileImg(dto.getImage());
             userRepository.save(user);
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
         return ResponseMessage.SUCCESS;
@@ -167,7 +170,7 @@ public class AuthServiceImpl implements AuthService {
 
             userRepository.save(user);
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 

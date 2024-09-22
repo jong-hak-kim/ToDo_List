@@ -17,6 +17,8 @@ import todo.util.UserToken;
 
 import java.util.Optional;
 
+import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
+
 @Service
 @Slf4j
 public class TodoServiceImpl implements TodoService {
@@ -53,7 +55,7 @@ public class TodoServiceImpl implements TodoService {
             toDoListRepository.save(todoList);
 
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
@@ -83,7 +85,7 @@ public class TodoServiceImpl implements TodoService {
             toDoListRepository.save(toDoList);
 
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
@@ -119,7 +121,7 @@ public class TodoServiceImpl implements TodoService {
             toDoListRepository.save(toDoList);
 
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
@@ -154,7 +156,7 @@ public class TodoServiceImpl implements TodoService {
             toDoListRepository.save(toDoList);
 
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
@@ -189,7 +191,7 @@ public class TodoServiceImpl implements TodoService {
 
             toDoListRepository.delete(toDoList);
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 

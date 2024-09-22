@@ -22,6 +22,8 @@ import todo.util.UserToken;
 
 import java.util.List;
 
+import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
+
 @Slf4j
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -77,7 +79,7 @@ public class CommentServiceImpl implements CommentService {
         } catch (
                 DataAccessException exception) {
 
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
 
         }
@@ -114,7 +116,7 @@ public class CommentServiceImpl implements CommentService {
             commentRepository.save(comment);
 
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
@@ -159,7 +161,7 @@ public class CommentServiceImpl implements CommentService {
             commentRepository.delete(comment);
 
         } catch (DataAccessException exception) {
-            log.error("Database error occurred while checking user details", exception);
+            log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
         return ResponseMessage.SUCCESS;
