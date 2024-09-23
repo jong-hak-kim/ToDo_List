@@ -7,12 +7,17 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.*;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.SignInResponseDto;
+import todo.entity.Comment;
+import todo.entity.ToDoList;
 import todo.entity.User;
 import todo.entity.VerificationToken;
+import todo.repository.CommentRepository;
+import todo.repository.ToDoListRepository;
 import todo.repository.TokenRepository;
 import todo.repository.UserRepository;
 import todo.service.AuthService;
@@ -21,6 +26,8 @@ import todo.util.JwtTokenUtil;
 import todo.util.PasswordUtil;
 import todo.util.UUIDUtil;
 import todo.util.UserToken;
+
+import java.util.List;
 
 import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
 import static todo.common.constant.ErrorMessage.MESSAGING_ERROR;
@@ -34,14 +41,16 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenUtil jwtTokenUtil;
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
+    private final ToDoListRepository toDoListRepository;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil, TokenRepository tokenRepository, EmailService emailService) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil, TokenRepository tokenRepository, EmailService emailService, ToDoListRepository toDoListRepository1) {
         this.userRepository = userRepository;
         this.passwordUtil = passwordUtil;
         this.jwtTokenUtil = jwtTokenUtil;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
+        this.toDoListRepository = toDoListRepository1;
     }
 
     @Override
@@ -88,11 +97,11 @@ public class AuthServiceImpl implements AuthService {
             }
 
             activateUser(verificationToken.getEmail());
+            return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
-        return ResponseMessage.SUCCESS;
 
     }
 
@@ -124,16 +133,16 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> updateUserImg(UserToken token, UserImgRequestDto dto) {
+    public ResponseEntity<ResponseDto> updateUserImg(UserToken userToken, UserImgRequestDto dto) {
         try {
 
 
-            if (token == null) {
+            if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
             }
 
             User user = userRepository.findUserByEmail(dto.getEmail());
-            boolean existedUserEmail = userRepository.existsByEmail(token.getEmail());
+            boolean existedUserEmail = userRepository.existsByEmail(userToken.getEmail());
             if (!existedUserEmail || user == null) {
                 return ResponseMessage.NOT_EXIST_USER;
             }
@@ -144,23 +153,23 @@ public class AuthServiceImpl implements AuthService {
 
             user.setProfileImg(dto.getImage());
             userRepository.save(user);
+            return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
-        return ResponseMessage.SUCCESS;
     }
 
     @Override
-    public ResponseEntity<ResponseDto> updatePwd(UserToken token, UserPwdRequestDto dto) {
+    public ResponseEntity<ResponseDto> updatePwd(UserToken userToken, UserPwdRequestDto dto) {
         try {
 
-            log.info("Received token: {}", token);
-            if (token == null) {
+            log.info("Received token: {}", userToken);
+            if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
             }
 
-            User user = userRepository.findUserByEmail(token.getEmail());
+            User user = userRepository.findUserByEmail(userToken.getEmail());
             if (passwordUtil.matches(user.getPassword(), dto.getOriginalPwd())) {
                 return ResponseMessage.PASSWORD_CURRENT_INVALID;
             }
@@ -169,12 +178,49 @@ public class AuthServiceImpl implements AuthService {
             user.setPassword(newPassword);
 
             userRepository.save(user);
+
+            return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
-        return ResponseMessage.SUCCESS;
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseDto> removeUser(UserToken userToken) {
+        try {
+
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            List<ToDoList> toDoLists = toDoListRepository.findToDoListsByUser(user);
+
+            for (ToDoList toDoList : toDoLists) {
+                toDoList.getComments().clear();
+                user.removeToDoList(toDoList);
+            }
+
+            user.getComments().clear();
+
+            VerificationToken verificationToken = tokenRepository.findByEmail(userToken.getEmail());
+            tokenRepository.delete(verificationToken);
+
+            userRepository.delete(user);
+
+            return ResponseMessage.SUCCESS;
+        } catch (DataAccessException exception) {
+            log.error(DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
     }
 
 

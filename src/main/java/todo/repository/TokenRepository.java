@@ -7,4 +7,5 @@ import todo.entity.VerificationToken;
 @Repository
 public interface TokenRepository extends JpaRepository<VerificationToken, Long> {
     VerificationToken findByToken(String token);
+    VerificationToken findByEmail(String email);
 }

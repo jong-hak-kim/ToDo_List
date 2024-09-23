@@ -76,6 +76,7 @@ public class CommentServiceImpl implements CommentService {
 
             commentRepository.save(comment);
 
+            return ResponseMessage.SUCCESS;
         } catch (
                 DataAccessException exception) {
 
@@ -83,7 +84,6 @@ public class CommentServiceImpl implements CommentService {
             return ResponseMessage.DATABASE_ERROR;
 
         }
-        return ResponseMessage.SUCCESS;
     }
 
     @Override
@@ -115,12 +115,12 @@ public class CommentServiceImpl implements CommentService {
 
             commentRepository.save(comment);
 
+            return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
-        return ResponseMessage.SUCCESS;
     }
 
     @Override
@@ -159,11 +159,11 @@ public class CommentServiceImpl implements CommentService {
 
             commentRepository.deleteCommentsByParentCommentId(dto.getCommentId());
             commentRepository.delete(comment);
+            return ResponseMessage.SUCCESS;
 
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
-        return ResponseMessage.SUCCESS;
     }
 }

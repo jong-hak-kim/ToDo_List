@@ -53,13 +53,13 @@ public class TodoServiceImpl implements TodoService {
             user.addToDoList(todoList);
 
             toDoListRepository.save(todoList);
+            return ResponseMessage.SUCCESS;
 
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
-        return ResponseMessage.SUCCESS;
     }
 
     @Override
@@ -83,6 +83,7 @@ public class TodoServiceImpl implements TodoService {
             updateNonNullField(dto, toDoList);
 
             toDoListRepository.save(toDoList);
+            return ResponseMessage.SUCCESS;
 
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
@@ -90,7 +91,6 @@ public class TodoServiceImpl implements TodoService {
         }
 
 
-        return ResponseMessage.SUCCESS;
     }
 
     @Override
@@ -120,12 +120,12 @@ public class TodoServiceImpl implements TodoService {
 
             toDoListRepository.save(toDoList);
 
+            return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
-        return ResponseMessage.SUCCESS;
     }
 
     @Override
@@ -155,12 +155,12 @@ public class TodoServiceImpl implements TodoService {
 
             toDoListRepository.save(toDoList);
 
+            return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
-        return ResponseMessage.SUCCESS;
     }
 
     @Transactional
@@ -190,12 +190,12 @@ public class TodoServiceImpl implements TodoService {
             user.removeToDoList(toDoList);
 
             toDoListRepository.delete(toDoList);
+            return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
 
-        return ResponseMessage.SUCCESS;
     }
 
     private void updateNonNullField(ModifyToDoRequestDto dto, ToDoList toDoList) {

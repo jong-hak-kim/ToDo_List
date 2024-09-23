@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import todo.dto.request.SignInRequestDto;
-import todo.dto.request.SignUpRequestDto;
-import todo.dto.request.UserImgRequestDto;
-import todo.dto.request.UserPwdRequestDto;
+import todo.dto.request.*;
 import todo.dto.response.ResponseDto;
 import todo.service.AuthService;
 import todo.util.UserToken;
@@ -91,5 +88,18 @@ public class AuthController {
             @Valid @RequestBody UserPwdRequestDto userPwdRequestDto) {
         log.info("Received token: {}", userToken);
         return authService.updatePwd(userToken, userPwdRequestDto);
+    }
+
+    @PostMapping("/remove")
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> removeUser(
+            @AuthenticationPrincipal UserToken userToken) {
+        return authService.removeUser(userToken);
     }
 }
