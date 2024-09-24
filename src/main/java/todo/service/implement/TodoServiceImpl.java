@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.*;
+import todo.dto.request.todo.*;
 import todo.dto.response.ResponseDto;
 import todo.entity.ToDoList;
 import todo.entity.User;

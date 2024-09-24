@@ -1,7 +1,7 @@
 package todo.service;
 
 import org.springframework.http.ResponseEntity;
-import todo.dto.request.*;
+import todo.dto.request.todo.*;
 import todo.dto.response.ResponseDto;
 import todo.util.UserToken;
 

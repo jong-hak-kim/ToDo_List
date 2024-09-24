@@ -6,7 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.SignUpRequestDto;
+import todo.dto.request.user.SignUpRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.util.PasswordUtil;
 

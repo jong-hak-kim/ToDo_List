@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.ResetPwdRequestDto;
+import todo.dto.request.user.ResetPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.entity.User;
 import todo.repository.UserRepository;

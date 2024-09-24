@@ -9,14 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.*;
+import todo.dto.request.user.SignInRequestDto;
+import todo.dto.request.user.SignUpRequestDto;
+import todo.dto.request.user.UserImgRequestDto;
+import todo.dto.request.user.UserPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.SignInResponseDto;
-import todo.entity.Comment;
 import todo.entity.ToDoList;
 import todo.entity.User;
 import todo.entity.VerificationToken;
-import todo.repository.CommentRepository;
 import todo.repository.ToDoListRepository;
 import todo.repository.TokenRepository;
 import todo.repository.UserRepository;
@@ -170,7 +171,7 @@ public class AuthServiceImpl implements AuthService {
             }
 
             User user = userRepository.findUserByEmail(userToken.getEmail());
-            if (passwordUtil.matches(user.getPassword(), dto.getOriginalPwd())) {
+            if (!passwordUtil.matches(dto.getOriginalPwd(), user.getPassword())) {
                 return ResponseMessage.PASSWORD_CURRENT_INVALID;
             }
 

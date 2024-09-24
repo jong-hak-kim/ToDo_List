@@ -1,4 +1,4 @@
-package todo.dto.request;
+package todo.dto.request.comment;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

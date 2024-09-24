@@ -1,4 +1,4 @@
-package todo.dto.request;
+package todo.dto.request.todo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

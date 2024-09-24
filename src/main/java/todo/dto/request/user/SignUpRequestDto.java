@@ -1,4 +1,4 @@
-package todo.dto.request;
+package todo.dto.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

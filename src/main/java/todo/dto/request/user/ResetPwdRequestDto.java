@@ -1,4 +1,4 @@
-package todo.dto.request;
+package todo.dto.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -10,4 +10,8 @@ public class ResetPwdRequestDto {
 
     @NotBlank
     private String email;
+
+    public ResetPwdRequestDto(String email) {
+        this.email = email;
+    }
 }

@@ -2,7 +2,7 @@ package todo.service;
 
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
-import todo.dto.request.ResetPwdRequestDto;
+import todo.dto.request.user.ResetPwdRequestDto;
 import todo.dto.response.ResponseDto;
 
 public interface EmailService {

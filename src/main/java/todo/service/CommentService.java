@@ -1,9 +1,9 @@
 package todo.service;
 
 import org.springframework.http.ResponseEntity;
-import todo.dto.request.AddCommentRequestDto;
-import todo.dto.request.ModifyCommentRequestDto;
-import todo.dto.request.RemoveCommentRequestDto;
+import todo.dto.request.comment.AddCommentRequestDto;
+import todo.dto.request.comment.ModifyCommentRequestDto;
+import todo.dto.request.comment.RemoveCommentRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.util.UserToken;
 
