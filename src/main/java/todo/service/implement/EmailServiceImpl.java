@@ -37,18 +37,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public ResponseEntity<ResponseDto> sendSignUpEmail(String email, String verificationUrl) throws MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-
-        helper.setFrom("whdgkr9070@naver.com");
-        helper.setTo(email);
-        helper.setSubject("투두리스트 회원가입을 위한 인증 메일입니다.");
-        String emailContent = "투두리스트 회원가입을 위한 이메일 인증 메일입니다.\n\n" +
-                "아래 링크를 클릭하면 가입 인증이 이루어집니다.\n" +
-                verificationUrl;
-        helper.setText(emailContent);
-
-        mailSender.send(message);
+        sendEmail(email, "투두리스트 회원가입을 위한 인증 메일입니다.", "투두리스트 회원가입을 위한 이메일 인증 메일입니다.\n\n아래 링크를 클릭하면 가입 인증이 이루어집니다.\n", verificationUrl);
         return ResponseMessage.SUCCESS;
     }
 
@@ -71,23 +60,45 @@ public class EmailServiceImpl implements EmailService {
             user.setPassword(encodePwd);
             userRepository.save(user);
 
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-
-            helper.setFrom("whdgkr9070@naver.com");
-            helper.setTo(dto.getEmail());
-            helper.setSubject("투두리스트 임시 비밀번호 발급 메일입니다.");
-            String emailContent = "투두리스트 임시 비밀번호 발급 메일입니다.\n\n" +
-                    "임시 비밀번호 : " +
-                    temporalPwd;
-            helper.setText(emailContent);
-
-            mailSender.send(message);
+            sendEmail(dto.getEmail(), "투두리스트 임시 비밀번호 발급 메일입니다.", "투두리스트 임시 비밀번호 발급 메일입니다.\n\n임시 비밀번호 : ", temporalPwd);
             return ResponseMessage.SUCCESS;
 
         } catch (MessagingException exception) {
             log.error(MESSAGING_ERROR, exception);
             return ResponseMessage.EMAIL_SEND_ERROR;
         }
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> sendRemoveEmail(String email, String content) {
+        try {
+
+            User user = userRepository.findUserByEmail(email);
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            String removeReason = "비속어 사용";
+
+            sendEmail(email, "투두리스트 계정 탈퇴 안내 메일입니다.", "투두리스트 사이트에서 탈퇴되셨습니다. \n\n탈퇴사유 : ", removeReason);
+            return ResponseMessage.SUCCESS;
+
+        } catch (MessagingException exception) {
+            log.error(MESSAGING_ERROR, exception);
+            return ResponseMessage.EMAIL_SEND_ERROR;
+        }
+    }
+
+    private void sendEmail(String email, String subject, String content, String verificationUrl) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom("whdgkr9070@naver.com");
+        helper.setTo(email);
+        helper.setSubject(subject);
+        String emailContent = content + verificationUrl;
+        helper.setText(emailContent);
+
+        mailSender.send(message);
     }
 }

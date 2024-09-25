@@ -10,11 +10,16 @@ import org.springframework.stereotype.Service;
 import todo.common.constant.ErrorMessage;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.admin.AdminPwdResetRequestDto;
+import todo.dto.request.admin.AdminRemoveUserRequestDto;
 import todo.dto.request.admin.AdminSignInRequestDto;
 import todo.dto.request.user.ResetPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.admin.AdminSignInResponseDto;
+import todo.entity.ToDoList;
 import todo.entity.User;
+import todo.entity.VerificationToken;
+import todo.repository.ToDoListRepository;
+import todo.repository.TokenRepository;
 import todo.repository.UserRepository;
 import todo.service.AdminService;
 import todo.service.EmailService;
@@ -22,18 +27,24 @@ import todo.util.JwtTokenUtil;
 import todo.util.PasswordUtil;
 import todo.util.UserToken;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
+    private final ToDoListRepository toDoListRepository;
+    private final TokenRepository tokenRepository;
     private final EmailService emailService;
     private final PasswordUtil passwordUtil;
     private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public AdminServiceImpl(UserRepository userRepository, EmailService emailService, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil) {
+    public AdminServiceImpl(UserRepository userRepository, ToDoListRepository toDoListRepository, TokenRepository tokenRepository, EmailService emailService, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil) {
         this.userRepository = userRepository;
+        this.toDoListRepository = toDoListRepository;
+        this.tokenRepository = tokenRepository;
         this.emailService = emailService;
         this.passwordUtil = passwordUtil;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -85,5 +96,38 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return ResponseMessage.LOGIN_FAILED;
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> removeUser(UserToken userToken, AdminRemoveUserRequestDto dto) {
+        try {
+
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            if (!userToken.getRole().equals("admin")) {
+                return ResponseMessage.UNAUTHORIZED_USER;
+            }
+
+            User user = userRepository.findUserByEmail(dto.getEmail());
+
+            List<ToDoList> toDoLists = toDoListRepository.findToDoListsByUser(user);
+
+            for (ToDoList toDoList : toDoLists) {
+                toDoList.getComments().clear();
+                user.removeToDoList(toDoList);
+            }
+
+            user.getComments().clear();
+
+            userRepository.delete(user);
+
+            return ResponseMessage.SUCCESS;
+
+        } catch (DataAccessException exception) {
+            log.info(ErrorMessage.DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
     }
 }
