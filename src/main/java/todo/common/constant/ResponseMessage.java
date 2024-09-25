@@ -46,4 +46,7 @@ public interface ResponseMessage {
 
     ResponseEntity<ResponseDto> NOT_EXIST_COMMENT
             = ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDto("NC", "Not Exist Comment"));
+
+    ResponseEntity<ResponseDto> UNAUTHORIZED_USER
+            = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("UU", "Unauthorized User")) ;
 }

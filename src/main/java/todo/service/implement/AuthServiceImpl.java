@@ -14,7 +14,7 @@ import todo.dto.request.user.SignUpRequestDto;
 import todo.dto.request.user.UserImgRequestDto;
 import todo.dto.request.user.UserPwdRequestDto;
 import todo.dto.response.ResponseDto;
-import todo.dto.response.SignInResponseDto;
+import todo.dto.response.user.SignInResponseDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
 import todo.entity.VerificationToken;

@@ -1,11 +1,11 @@
-package todo.dto.response;
+package todo.dto.response.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import todo.dto.response.ResponseDto;
 import todo.entity.User;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class SignInResponseDto extends ResponseDto {
