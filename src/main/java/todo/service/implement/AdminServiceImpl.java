@@ -17,7 +17,6 @@ import todo.dto.response.ResponseDto;
 import todo.dto.response.admin.AdminSignInResponseDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
-import todo.entity.VerificationToken;
 import todo.repository.ToDoListRepository;
 import todo.repository.TokenRepository;
 import todo.repository.UserRepository;
@@ -35,16 +34,14 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
     private final ToDoListRepository toDoListRepository;
-    private final TokenRepository tokenRepository;
     private final EmailService emailService;
     private final PasswordUtil passwordUtil;
     private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    public AdminServiceImpl(UserRepository userRepository, ToDoListRepository toDoListRepository, TokenRepository tokenRepository, EmailService emailService, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil) {
+    public AdminServiceImpl(UserRepository userRepository, ToDoListRepository toDoListRepository, EmailService emailService, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil) {
         this.userRepository = userRepository;
         this.toDoListRepository = toDoListRepository;
-        this.tokenRepository = tokenRepository;
         this.emailService = emailService;
         this.passwordUtil = passwordUtil;
         this.jwtTokenUtil = jwtTokenUtil;
