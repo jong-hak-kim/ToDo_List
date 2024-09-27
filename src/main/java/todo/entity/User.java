@@ -68,6 +68,10 @@ public class User {
         isActive = active;
     }
 
+    public void setDeactivationDate(LocalDateTime deactivationDate) {
+        this.deactivationDate = deactivationDate;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }

@@ -1,6 +1,7 @@
 package todo.service;
 
 import org.springframework.http.ResponseEntity;
+import todo.dto.request.admin.AdminDeactivateRequestDto;
 import todo.dto.request.admin.AdminPwdResetRequestDto;
 import todo.dto.request.admin.AdminRemoveUserRequestDto;
 import todo.dto.request.admin.AdminSignInRequestDto;
@@ -14,4 +15,6 @@ public interface AdminService {
     ResponseEntity<ResponseDto> signIn(AdminSignInRequestDto dto);
 
     ResponseEntity<ResponseDto> removeUser(UserToken userToken, AdminRemoveUserRequestDto dto);
+
+    ResponseEntity<ResponseDto> deactivateUser(UserToken userToken, AdminDeactivateRequestDto dto);
 }

@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import todo.dto.request.admin.AdminDeactivateRequestDto;
 import todo.dto.request.admin.AdminPwdResetRequestDto;
 import todo.dto.request.admin.AdminRemoveUserRequestDto;
 import todo.dto.request.admin.AdminSignInRequestDto;
@@ -37,7 +38,7 @@ public class AdminController {
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
     public ResponseEntity<ResponseDto> adminSignIn(
-            @Valid @RequestBody AdminSignInRequestDto adminSignInRequestDto){
+            @Valid @RequestBody AdminSignInRequestDto adminSignInRequestDto) {
         return adminService.signIn(adminSignInRequestDto);
     }
 
@@ -56,7 +57,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/remove")
-    @Operation(summary = "관리자가 유저 강제 탈퇴", description = "관리자가 유저강제 탈퇴 API")
+    @Operation(summary = "관리자가 유저 강제 탈퇴", description = "관리자가 유저 강제 탈퇴 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "탈퇴 완료", content = @Content),
             @ApiResponse(responseCode = "401", description = "권한 없음", content = @Content),
@@ -67,6 +68,20 @@ public class AdminController {
             @AuthenticationPrincipal UserToken userToken,
             @Valid @RequestBody AdminRemoveUserRequestDto adminRemoveUserRequestDto) {
         return adminService.removeUser(userToken, adminRemoveUserRequestDto);
+    }
+
+    @PostMapping("/admin/deactivate")
+    @Operation(summary = "관리자가 유저 활동 정지", description = "관리자가 활동 정지 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "탈퇴 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한 없음", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> deactivateUser(
+            @AuthenticationPrincipal UserToken userToken,
+            @Valid @RequestBody AdminDeactivateRequestDto adminDeactivateRequestDto) {
+        return adminService.deactivateUser(userToken, adminDeactivateRequestDto);
     }
 
 }
