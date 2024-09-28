@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ErrorMessage;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.admin.AdminDeactivateRequestDto;
-import todo.dto.request.admin.AdminPwdResetRequestDto;
-import todo.dto.request.admin.AdminRemoveUserRequestDto;
-import todo.dto.request.admin.AdminSignInRequestDto;
+import todo.dto.request.admin.*;
 import todo.dto.request.user.ResetPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.admin.AdminSignInResponseDto;
@@ -165,6 +162,31 @@ public class AdminServiceImpl implements AdminService {
             log.error(ErrorMessage.DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveUserToDoRequestDto dto) {
+
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            if (!userToken.getRole().equals(ADMIN.getDescription())) {
+                return ResponseMessage.UNAUTHORIZED_TOKEN;
+            }
+
+            ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getListId());
+
+            emailService.sendRemoveUserToDo(toDoList.getUser().getEmail(), toDoList.getTitle(), dto.getReason());
+
+            return ResponseMessage.SUCCESS;
+
+        } catch (DataAccessException exception) {
+            log.error(ErrorMessage.DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
+
     }
 
     @Scheduled(fixedRate = 86400000)

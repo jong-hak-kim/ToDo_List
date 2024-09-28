@@ -11,10 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import todo.dto.request.admin.AdminDeactivateRequestDto;
-import todo.dto.request.admin.AdminPwdResetRequestDto;
-import todo.dto.request.admin.AdminRemoveUserRequestDto;
-import todo.dto.request.admin.AdminSignInRequestDto;
+import todo.dto.request.admin.*;
 import todo.dto.response.ResponseDto;
 import todo.service.AdminService;
 import todo.util.UserToken;
@@ -82,6 +79,22 @@ public class AdminController {
             @AuthenticationPrincipal UserToken userToken,
             @Valid @RequestBody AdminDeactivateRequestDto adminDeactivateRequestDto) {
         return adminService.deactivateUser(userToken, adminDeactivateRequestDto);
+    }
+
+
+    @PostMapping("/admin/todo/remove")
+    @Operation(summary = "할 일 삭제", description = "유저 할 일 삭제 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "비밀번호 변경 완료", content = @Content),
+            @ApiResponse(responseCode = "400", description = "기존 비밀번호 불일치", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> removeToDo(
+            @AuthenticationPrincipal UserToken userToken,
+            @Valid @RequestBody RemoveUserToDoRequestDto removeUserToDoRequestDto) {
+        return adminService.removeToDo(userToken, removeUserToDoRequestDto);
     }
 
 }

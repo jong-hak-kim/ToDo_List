@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import todo.dto.request.admin.RemoveUserToDoRequestDto;
 import todo.dto.request.user.SignInRequestDto;
 import todo.dto.request.user.SignUpRequestDto;
 import todo.dto.request.user.UserImgRequestDto;
@@ -105,4 +106,5 @@ public class AuthController {
             @AuthenticationPrincipal UserToken userToken) {
         return authService.removeUser(userToken);
     }
+
 }

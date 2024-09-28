@@ -75,7 +75,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public ResponseEntity<ResponseDto> sendRemoveEmail(String email, String reason) {
         try {
-            sendEmail(email, "투두리스트 계정 탈퇴 안내 메일입니다.", "투두리스트 사이트에서 탈퇴되셨습니다. \n\n탈퇴 사유 : " + reason);
+            sendEmail(email, "투두리스트 계정 탈퇴 안내 메일입니다.", "투두리스트 사이트에서 탈퇴되었습니다. \n\n탈퇴 사유 : " + reason);
             return ResponseMessage.SUCCESS;
 
         } catch (MessagingException exception) {
@@ -88,6 +88,18 @@ public class EmailServiceImpl implements EmailService {
     public ResponseEntity<ResponseDto> sendDeactivationEmail(String email, String reason, LocalDate deactivationDate) {
         try {
             sendEmail(email, "투두리스트 계정 활동 정지 안내 메일입니다.", "투두리스트 사이트에서 활동 정지되었습니다. \n\n정지 사유 : " + reason + "\n정지 해제 날짜 : " + deactivationDate);
+            return ResponseMessage.SUCCESS;
+
+        } catch (MessagingException exception) {
+            log.error(MESSAGING_ERROR, exception);
+            return ResponseMessage.EMAIL_SEND_ERROR;
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> sendRemoveUserToDo(String email, String toDoName, String reason) {
+        try {
+            sendEmail(email, "투두 리스트 할 일 삭제 안내 메일입니다.", "삭제된 할 일 : " + toDoName + "\n\n삭제 사유 : " + reason);
             return ResponseMessage.SUCCESS;
 
         } catch (MessagingException exception) {

@@ -15,4 +15,6 @@ public interface EmailService {
     ResponseEntity<ResponseDto> sendRemoveEmail(String email, String content) throws MessagingException;
 
     ResponseEntity<ResponseDto> sendDeactivationEmail(String email, String reason, LocalDate deactivationDate);
+
+    ResponseEntity<ResponseDto> sendRemoveUserToDo(String email,String toDoName, String reason);
 }
