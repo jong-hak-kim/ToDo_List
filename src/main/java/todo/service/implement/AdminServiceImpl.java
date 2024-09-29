@@ -121,7 +121,7 @@ public class AdminServiceImpl implements AdminService {
 
             user.getComments().clear();
 
-            emailService.sendRemoveEmail(dto.getEmail(), "비속어 사용");
+            emailService.sendRemoveEmail(dto.getEmail(), dto.getReason());
 
             userRepository.delete(user);
 
@@ -155,7 +155,7 @@ public class AdminServiceImpl implements AdminService {
 
             userRepository.save(user);
 
-            emailService.sendDeactivationEmail(dto.getEmail(), "비정상적인 활동", dto.getDeactivateDate().toLocalDate());
+            emailService.sendDeactivationEmail(dto.getEmail(), dto.getReason(), dto.getDeactivateDate().toLocalDate());
 
             return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
@@ -200,4 +200,5 @@ public class AdminServiceImpl implements AdminService {
             userRepository.save(deactivateUser);
         }
     }
+
 }

@@ -13,8 +13,12 @@ public class AdminDeactivateRequestDto {
     @NotBlank
     private String email;
 
+    @NotBlank
+    private String reason;
+
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deactivateDate;
+
 
 }
