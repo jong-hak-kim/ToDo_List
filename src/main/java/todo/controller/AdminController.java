@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,9 +35,11 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
-    public ResponseEntity<ResponseDto> adminSignIn(
-            @Valid @RequestBody AdminSignInRequestDto adminSignInRequestDto) {
-        return adminService.signIn(adminSignInRequestDto);
+    public String adminSignIn(
+            @Valid @RequestBody AdminSignInRequestDto adminSignInRequestDto, Model model) {
+        ResponseEntity<ResponseDto> response = adminService.signIn(adminSignInRequestDto);
+
+        return "adminSignIn";
     }
 
     @PostMapping("/admin/password")
