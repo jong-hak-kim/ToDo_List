@@ -2,12 +2,15 @@ package todo.service.implement;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.todo.*;
 import todo.dto.response.ResponseDto;
+import todo.dto.response.todo.GetToDoListFilterDto;
+import todo.dto.response.todo.GetToDoListResponseDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
 import todo.repository.ToDoListRepository;
@@ -15,7 +18,9 @@ import todo.repository.UserRepository;
 import todo.service.TodoService;
 import todo.util.UserToken;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
 
@@ -196,6 +201,37 @@ public class TodoServiceImpl implements TodoService {
             return ResponseMessage.DATABASE_ERROR;
         }
 
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> getToDoList(UserToken userToken) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            if (!user.isActive()) {
+                return ResponseMessage.IS_NOT_ACTIVATE;
+            }
+
+            List<ToDoList> toDoLists = toDoListRepository.findToDoListsByUser(user);
+
+            List<GetToDoListFilterDto> todoResponseList = toDoLists.stream()
+                    .map(toDoList -> new GetToDoListFilterDto(toDoList.getListId(), toDoList.getTitle(), toDoList.isCompletionStatus()))
+                    .toList();
+
+            return ResponseEntity.status(HttpStatus.OK).body(new GetToDoListResponseDto(todoResponseList));
+
+        } catch (DataAccessException exception) {
+            log.error(DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
     }
 
     private void updateNonNullField(ModifyToDoRequestDto dto, ToDoList toDoList) {

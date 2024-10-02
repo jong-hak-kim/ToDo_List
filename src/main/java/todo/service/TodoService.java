@@ -7,13 +7,15 @@ import todo.util.UserToken;
 
 public interface TodoService {
 
-    public ResponseEntity<ResponseDto> addToDo(UserToken userToken, AddToDoRequestDto dto);
+    ResponseEntity<ResponseDto> addToDo(UserToken userToken, AddToDoRequestDto dto);
 
-    public ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, ModifyToDoRequestDto dto);
+    ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, ModifyToDoRequestDto dto);
 
-    public ResponseEntity<ResponseDto> completeToDo(UserToken userToken, CompleteToDoRequestDto dto);
+    ResponseEntity<ResponseDto> completeToDo(UserToken userToken, CompleteToDoRequestDto dto);
 
-    public ResponseEntity<ResponseDto> cancelCompleteToDo(UserToken userToken, CancelCompleteToDoRequestDto dto);
+    ResponseEntity<ResponseDto> cancelCompleteToDo(UserToken userToken, CancelCompleteToDoRequestDto dto);
 
-    public ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveToDoRequestDto dto);
+    ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveToDoRequestDto dto);
+
+    ResponseEntity<ResponseDto> getToDoList(UserToken userToken);
 }

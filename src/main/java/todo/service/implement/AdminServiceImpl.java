@@ -26,6 +26,7 @@ import todo.util.PasswordUtil;
 import todo.util.UserToken;
 
 import java.time.LocalDateTime;
+import java.util.Iterator;
 import java.util.List;
 
 import static todo.common.enums.Role.ADMIN;
@@ -114,9 +115,12 @@ public class AdminServiceImpl implements AdminService {
 
             List<ToDoList> toDoLists = user.getToDoLists();
 
-            for (ToDoList toDoList : toDoLists) {
+            Iterator<ToDoList> iterator = toDoLists.iterator();
+            while (iterator.hasNext()) {
+                ToDoList toDoList = iterator.next();
                 toDoList.getComments().clear();
-                user.removeToDoList(toDoList);
+                iterator.remove();
+
             }
 
             user.getComments().clear();

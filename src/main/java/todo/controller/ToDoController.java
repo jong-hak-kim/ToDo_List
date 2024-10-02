@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,20 @@ public class ToDoController {
 
     public ToDoController(TodoService todoService) {
         this.todoService = todoService;
+    }
+
+    @GetMapping("/todo")
+    @Operation(summary = "할 일 목록 조회", description = "할 일 목록 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 목록 조회 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> getToDoList(
+            @AuthenticationPrincipal UserToken userToken
+    ) {
+        return todoService.getToDoList(userToken);
     }
 
     @PostMapping("/todo")
