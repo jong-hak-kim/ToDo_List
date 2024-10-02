@@ -35,11 +35,9 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
-    public String adminSignIn(
+    public ResponseEntity<ResponseDto> adminSignIn(
             @Valid @RequestBody AdminSignInRequestDto adminSignInRequestDto, Model model) {
-        ResponseEntity<ResponseDto> response = adminService.signIn(adminSignInRequestDto);
-
-        return "adminSignIn";
+        return adminService.signIn(adminSignInRequestDto);
     }
 
     @PostMapping("/admin/password")
