@@ -1,18 +1,24 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 
-const ToDoList = () => {
+const ToDoList = ({token}) => {
     const [loading, setLoading] = useState(true)
     const [todoList, setTodoList] = useState([])
+
     useEffect(() => {
-        fetchToDoList()
-    }, []);
+        if (token) {
+            fetchToDoList()
+        } else {
+            setTodoList([])
+            setLoading(false);
+        }
+    }, [token]);
 
     const fetchToDoList = async () => {
         try {
             const response = await axios.get('http://127.0.0.1:8080/todo', {
                 headers: {
-                    Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Mjc5NTUxODYsImV4cCI6MTcyNzk1ODc4NiwiZW1haWwiOiJqb25naHl1azEyMzRAZ21haWwuY29tIiwicm9sZSI6InVzZXIifQ.5z0SO7BeaaVQg-SQP4q7cBUGirX1oAMfjyiHhvCHvoc"
+                    Authorization: `Bearer ${token}`
                 }
             })
             setTodoList(response.data.filterToDoList)
@@ -29,7 +35,7 @@ const ToDoList = () => {
                 {listId: id},
                 {
                     headers: {
-                        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Mjc5NTUxODYsImV4cCI6MTcyNzk1ODc4NiwiZW1haWwiOiJqb25naHl1azEyMzRAZ21haWwuY29tIiwicm9sZSI6InVzZXIifQ.5z0SO7BeaaVQg-SQP4q7cBUGirX1oAMfjyiHhvCHvoc"
+                        Authorization: `Bearer ${token}`
                     }
                 }
             );
@@ -51,7 +57,7 @@ const ToDoList = () => {
             const response = await axios.post("http://127.0.0.1:8080/todo/cancel", {listId: id},
                 {
                     headers: {
-                        Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Mjc5NTUxODYsImV4cCI6MTcyNzk1ODc4NiwiZW1haWwiOiJqb25naHl1azEyMzRAZ21haWwuY29tIiwicm9sZSI6InVzZXIifQ.5z0SO7BeaaVQg-SQP4q7cBUGirX1oAMfjyiHhvCHvoc"
+                        Authorization: `Bearer ${token}`
                     }
                 }
             );

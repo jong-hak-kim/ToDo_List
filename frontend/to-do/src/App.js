@@ -1,29 +1,24 @@
 import React, {useState} from "react";
 import 'react-calendar/dist/Calendar.css';
 import './App.css';
-import ToDoCalendar from "./components/ToDoCalendar";
-import ToDoList from "./components/ToDoList";
+import Router from "./shared/Router";
 
 function App() {
 
+    const [token, setToken] = useState(localStorage.getItem("token"));
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        setToken(null);
+    };
+
+    const handleLoginSuccess = (newToken) => {
+        localStorage.setItem("token", newToken);
+        setToken(newToken);
+    };
+
     return (
-        <main>
-            <header className="header">
-                <h1>ToDo List</h1>
-                <div className="auth-buttons">
-                    <button className="auth-button">로그인</button>
-                    <button className="auth-button">회원가입</button>
-                </div>
-            </header>
-            <div className="container">
-                <br/>
-                <div className="calendar-container">
-                    <ToDoCalendar/>
-                    <br/>
-                </div>
-                <ToDoList/>
-            </div>
-        </main>
+      <Router token={token} handleLogout={handleLogout} handleLoginSuccess={handleLoginSuccess}/>
     );
 }
 
