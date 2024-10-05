@@ -20,7 +20,6 @@ import todo.util.UserToken;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
 
@@ -53,7 +52,7 @@ public class TodoServiceImpl implements TodoService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            ToDoList todoList = new ToDoList(user, dto.getTitle(), dto.getContent(), dto.getDueDate(), dto.getPriority(), dto.getRepeatInterval());
+            ToDoList todoList = new ToDoList(user, dto.getTitle(), dto.getContent(), dto.getStartDate().atTime(23, 59, 59), dto.getPriority(), dto.getRepeatEndDate().atTime(23, 59, 59));
 
             user.addToDoList(todoList);
 
@@ -238,7 +237,7 @@ public class TodoServiceImpl implements TodoService {
         Optional.ofNullable(dto.getTitle()).ifPresent(toDoList::setTitle);
         Optional.ofNullable(dto.getContent()).ifPresent(toDoList::setContent);
         Optional.ofNullable(dto.getPriority()).ifPresent(toDoList::setPriority);
-        Optional.ofNullable(dto.getDueDate()).ifPresent(toDoList::setDueDate);
-        Optional.ofNullable(dto.getRepeatInterval()).ifPresent(toDoList::setRepeatInterval);
+        Optional.ofNullable(dto.getStartDate()).ifPresent(startDate -> toDoList.setStartDate(startDate.atTime(23, 59, 59)));
+        Optional.ofNullable(dto.getRepeatEndDate()).ifPresent(repeatEndDate -> toDoList.setRepeatEndDate(repeatEndDate.atTime(23, 59, 59)));
     }
 }

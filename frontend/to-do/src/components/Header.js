@@ -10,7 +10,7 @@ function Header({isLoggedIn, handleLogout}) {
                 style={{cursor : "pointer"}}
                 onClick={() => {
                 navigate("/")
-            }}>ToDo List</h1>
+            }}>TaskMate</h1>
             <div className="auth-buttons">
                 {isLoggedIn ? (
                     <button onClick={handleLogout} className="auth-button">
@@ -19,7 +19,7 @@ function Header({isLoggedIn, handleLogout}) {
                 ) : (
                     <>
                         <button onClick={() => {
-                            navigate('login');
+                            navigate('/login');
                         }}
                                 className="auth-button">
                             로그인

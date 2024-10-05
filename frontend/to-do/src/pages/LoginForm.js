@@ -3,7 +3,7 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import Header from "../components/Header";
 
-const LoginForm = ({handleLoginSuccess}) => {
+const LoginForm = ({token, handleLogout, handleLoginSuccess}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -38,7 +38,7 @@ const LoginForm = ({handleLoginSuccess}) => {
 
     return (
         <main>
-            <Header/>
+            <Header isLoggedIn={!!token} handleLogout={handleLogout}/>
 
             <div className="login-form-container">
                 <h2>로그인</h2>

@@ -29,8 +29,8 @@ public class ToDoList {
     @Column(nullable = false)
     private String content;
 
-    @Column(name = "due_date", nullable = false)
-    private LocalDateTime dueDate;
+    @Column(name = "start_date", nullable = false)
+    private LocalDateTime startDate;
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
@@ -41,22 +41,22 @@ public class ToDoList {
     @Column(nullable = false)
     private String priority;
 
-    @Column(name = "repeat_interval")
-    private String repeatInterval;
+    @Column(name = "repeat_end_date")
+    private LocalDateTime repeatEndDate;
 
     @OneToMany(mappedBy = "toDoList", cascade = CascadeType.ALL
             , orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public ToDoList(User user, String title, String content, LocalDateTime dueDate, String priority, String repeatInterval) {
+    public ToDoList(User user, String title, String content, LocalDateTime startDate, String priority, LocalDateTime repeatEndDate) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.dueDate = dueDate;
+        this.startDate = startDate;
         this.creationDate = LocalDateTime.now();
         this.completionStatus = false;
         this.priority = priority;
-        this.repeatInterval = repeatInterval;
+        this.repeatEndDate = repeatEndDate;
     }
 
     public void setTitle(String title) {
@@ -67,16 +67,16 @@ public class ToDoList {
         this.content = content;
     }
 
-    public void setDueDate(LocalDateTime dueDate) {
-        this.dueDate = dueDate;
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
     public void setPriority(String priority) {
         this.priority = priority;
     }
 
-    public void setRepeatInterval(String repeatInterval) {
-        this.repeatInterval = repeatInterval;
+    public void setRepeatEndDate(LocalDateTime repeatEndDate) {
+        this.repeatEndDate = repeatEndDate;
     }
 
     public void setCompletionStatus(boolean completionStatus) {
