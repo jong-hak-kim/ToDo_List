@@ -37,7 +37,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
     public ResponseEntity<ResponseDto> userSignUpAndSendEmail(
-            @Valid @RequestBody SignUpRequestDto signUpRequestDto) {
+            @Valid @ModelAttribute SignUpRequestDto signUpRequestDto) {
         return authService.userSignUpAndSendEmail(signUpRequestDto);
     }
 

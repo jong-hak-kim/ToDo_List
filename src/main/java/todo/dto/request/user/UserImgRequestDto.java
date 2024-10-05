@@ -3,6 +3,7 @@ package todo.dto.request.user;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -11,5 +12,5 @@ public class UserImgRequestDto {
     private String email;
 
     @NotBlank
-    private String image;
+    private MultipartFile image;
 }

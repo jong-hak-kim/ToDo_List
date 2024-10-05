@@ -23,15 +23,12 @@ import todo.repository.TokenRepository;
 import todo.repository.UserRepository;
 import todo.service.AuthService;
 import todo.service.EmailService;
-import todo.util.JwtTokenUtil;
-import todo.util.PasswordUtil;
-import todo.util.UUIDUtil;
-import todo.util.UserToken;
+import todo.util.*;
 
+import java.io.IOException;
 import java.util.List;
 
-import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
-import static todo.common.constant.ErrorMessage.MESSAGING_ERROR;
+import static todo.common.constant.ErrorMessage.*;
 
 @Service
 @Slf4j
@@ -43,15 +40,17 @@ public class AuthServiceImpl implements AuthService {
     private final TokenRepository tokenRepository;
     private final EmailService emailService;
     private final ToDoListRepository toDoListRepository;
+    private final SaveFileUtil saveFileUtil;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil, TokenRepository tokenRepository, EmailService emailService, ToDoListRepository toDoListRepository1) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil, TokenRepository tokenRepository, EmailService emailService, ToDoListRepository toDoListRepository1, SaveFileUtil saveFileUtil) {
         this.userRepository = userRepository;
         this.passwordUtil = passwordUtil;
         this.jwtTokenUtil = jwtTokenUtil;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
         this.toDoListRepository = toDoListRepository1;
+        this.saveFileUtil = saveFileUtil;
     }
 
     @Override
@@ -66,7 +65,13 @@ public class AuthServiceImpl implements AuthService {
 
             String encodedPassword = passwordUtil.encodePassword(dto.getPassword());
 
-            User user = !dto.getProfileImg().isEmpty() ? new User(dto.getEmail(), encodedPassword, dto.getProfileImg(), dto.getPhoneNumber()) : new User(dto.getEmail(), encodedPassword, dto.getPhoneNumber());
+            String filename = dto.getProfileImg().getOriginalFilename();
+            byte[] bytes = dto.getProfileImg().getBytes();
+
+            String profileImageUrl = saveFileUtil.saveFile(bytes, filename);
+
+            User user = !dto.getProfileImg().isEmpty() ?
+                    new User(dto.getEmail(), encodedPassword, profileImageUrl, dto.getPhoneNumber()) : new User(dto.getEmail(), encodedPassword, dto.getPhoneNumber());
 
             user.setActive(false);
             sendVerificationEmail(dto.getEmail());
@@ -80,6 +85,9 @@ public class AuthServiceImpl implements AuthService {
         } catch (MessagingException exception) {
             log.error(MESSAGING_ERROR, exception);
             return ResponseMessage.EMAIL_SEND_ERROR;
+        } catch (IOException exception) {
+            log.error(IMAGE_UPLOAD_ERROR_LOG, exception);
+            return ResponseMessage.IMAGE_UPLOAD_ERROR;
         }
     }
 
@@ -152,12 +160,20 @@ public class AuthServiceImpl implements AuthService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            user.setProfileImg(dto.getImage());
+            String filename = dto.getImage().getOriginalFilename();
+            byte[] bytes = dto.getImage().getBytes();
+
+            String profileImageUrl = saveFileUtil.saveFile(bytes, filename);
+
+            user.setProfileImg(profileImageUrl);
             userRepository.save(user);
             return ResponseMessage.SUCCESS;
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
+        } catch (IOException exception) {
+            log.error(IMAGE_UPLOAD_ERROR_LOG, exception);
+            return ResponseMessage.IMAGE_UPLOAD_ERROR;
         }
     }
 

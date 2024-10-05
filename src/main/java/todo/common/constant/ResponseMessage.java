@@ -49,4 +49,7 @@ public interface ResponseMessage {
 
     ResponseEntity<ResponseDto> UNAUTHORIZED_USER
             = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ResponseDto("UU", "Unauthorized User")) ;
+
+    ResponseEntity<ResponseDto> IMAGE_UPLOAD_ERROR
+            = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto("IE", "Image Upload Error"));
 }
