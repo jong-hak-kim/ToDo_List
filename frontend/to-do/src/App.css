@@ -51,34 +51,34 @@ main {
     gap: 10px;
     margin-left: auto;
     position: absolute;
-    right: 90px;  /* 오른쪽에서 20px 떨어진 위치에 배치 */
+    right: 90px; /* 오른쪽에서 20px 떨어진 위치에 배치 */
 }
 
 .auth-button {
     padding: 10px 20px;
     border: none;
-    border-radius: 25px;  /* 둥근 모서리로 부드럽게 만듦 */
+    border-radius: 25px; /* 둥근 모서리로 부드럽게 만듦 */
     background: #4A90E2;
     color: white;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 효과 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
 }
 
 .add-todo {
     padding: 10px 20px;
     margin: 10px auto;
     border: none;
-    border-radius: 25px;  /* 둥근 모서리로 부드럽게 만듦 */
+    border-radius: 25px; /* 둥근 모서리로 부드럽게 만듦 */
     background: #4A90E2;
     color: white;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* 부드러운 그림자 효과 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
 }
 
 .auth-button:hover {
@@ -116,6 +116,10 @@ button:hover {
     background-color: #357ABD;
 }
 
+.todo-need-login {
+    width: 600px;
+}
+
 .todo-item {
     width: 500px;
     display: flex;
@@ -127,8 +131,8 @@ button:hover {
 }
 
 .todo-checkbox {
-    margin-right: 10px;  /* 체크박스와 텍스트 사이 간격 추가 */
-    transform: scale(1.2);  /* 체크박스 크기 약간 키우기 */
+    margin-right: 10px; /* 체크박스와 텍스트 사이 간격 추가 */
+    transform: scale(1.2); /* 체크박스 크기 약간 키우기 */
     vertical-align: middle;
 }
 
@@ -136,13 +140,13 @@ button:hover {
     font-family: 'Nanum Gothic', sans-serif;
     font-size: 14px;
     color: #333;
-    text-decoration: none;  /* 기본 텍스트 스타일 */
+    text-decoration: none; /* 기본 텍스트 스타일 */
     line-height: 1.2;
 }
 
 .todo-text.completed {
-    text-decoration: line-through;  /* 체크된 경우 텍스트에 취소선 추가 */
-    color: gray;  /* 완료된 항목은 회색으로 변경 */
+    text-decoration: line-through; /* 체크된 경우 텍스트에 취소선 추가 */
+    color: gray; /* 완료된 항목은 회색으로 변경 */
 }
 
 .todo-board {
@@ -189,13 +193,13 @@ h1 {
 }
 
 .calendar-container {
-    flex: 1;  /* 달력이 좌측을 차지하도록 설정 */
+    flex: 1; /* 달력이 좌측을 차지하도록 설정 */
     max-width: 400px;
 }
 
 /* 할 일 목록 스타일 */
 .todo-board {
-    flex: 2;  /* 할 일 목록이 우측을 차지하도록 설정 */
+    flex: 2; /* 할 일 목록이 우측을 차지하도록 설정 */
     max-width: 600px;
 }
 
@@ -246,7 +250,7 @@ h1 {
     transition: background-color 0.3s ease;
 }
 
-.react-calendar__tile:hover{
+.react-calendar__tile:hover {
     background-color: #e0f7fa;
 }
 
@@ -323,6 +327,7 @@ h1 {
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-bottom: 10px;
 }
 
 label {
@@ -355,6 +360,48 @@ textarea {
 }
 
 .add-todo-button:hover {
+    background-color: #357ABD;
+}
+
+.add-user-container {
+    display: grid;
+    justify-content: center;
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.add-user-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.add-user-container input {
+    width: 300px;
+}
+
+.add-user-container button {
+    width: 90px;
+    padding: 10px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.add-user-button {
+    padding: 10px 20px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-user-button:hover {
     background-color: #357ABD;
 }
 

@@ -12,7 +12,7 @@ function Home({token, handleLogout}) {
                 <br/>
                 <ToDoCalendar/>
                 <br/>
-                <ToDoList token={token}/>
+                <ToDoList isLoggedIn={!!token} token={token}/>
             </div>
         </main>
     );

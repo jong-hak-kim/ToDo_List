@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
-const ToDoList = ({token}) => {
+const ToDoList = ({isLoggedIn, token}) => {
     const [loading, setLoading] = useState(true)
     const [todoList, setTodoList] = useState([])
     const navigate = useNavigate()
@@ -84,26 +84,31 @@ const ToDoList = ({token}) => {
     };
 
     return (
-        <div className="todo-board">
-            <button onClick={() => {
-                navigate("/todo/add")
-            }} className="add-todo">할 일 추가</button>
-            <ul className="todo-list">
-                {todoList.map(todo => (
-                    <li key={todo.listId}>
-                        <input
-                            type="checkbox"
-                            checked={todo.completionStatus}
-                            onChange={(e) => handleCheckboxChange(todo.listId, e.target.checked)}
-                            className="todo-checkbox"
-                        />
-                        <span className={`todo-text ${todo.completionStatus ? 'completed' : ''}`}>
+        <>
+            {isLoggedIn ? (
+                <div className="todo-board">
+                    <button onClick={() => {
+                        navigate("/todo/add")
+                    }} className="add-todo">할 일 추가
+                    </button>
+                    <ul className="todo-list">
+                        {todoList.map(todo => (
+                            <li key={todo.listId}>
+                                <input
+                                    type="checkbox"
+                                    checked={todo.completionStatus}
+                                    onChange={(e) => handleCheckboxChange(todo.listId, e.target.checked)}
+                                    className="todo-checkbox"
+                                />
+                                <span className={`todo-text ${todo.completionStatus ? 'completed' : ''}`}>
                                     {todo.title}
                                 </span>
-                    </li>
-                ))}
-            </ul>
-        </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ) : (<p className="todo-need-login"> 할 일을 보려면 로그인하세요.</p>)}
+        </>
     )
 }
 
