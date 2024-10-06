@@ -9,6 +9,7 @@ import todo.common.constant.ResponseMessage;
 import todo.dto.request.user.SignUpRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.util.PasswordUtil;
+import todo.util.SaveFileUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +24,9 @@ class AuthServiceImplTest {
     @Autowired
     private PasswordUtil passwordUtil;
 
+    @Autowired
+    private SaveFileUtil saveFileUtil;
+
 
     @Test
     void addDuplicateEmail() throws Exception {
@@ -30,7 +34,7 @@ class AuthServiceImplTest {
         SignUpRequestDto dto = new SignUpRequestDto();
         dto.setEmail("user1@naver.com");
         dto.setPassword("userPass2");
-        dto.setProfileImg("profile.jpg");
+//        dto.setProfileImg("profile.jpg");
         dto.setPhoneNumber("010-1234-5678");
 
         //when
@@ -50,7 +54,7 @@ class AuthServiceImplTest {
         SignUpRequestDto dto = new SignUpRequestDto();
         dto.setEmail("newUser@naver.com");
         dto.setPassword("userPass2");
-        dto.setProfileImg("profile.jpg");
+//        dto.setProfileImg("profile.jpg");
         dto.setPhoneNumber("010-1111-1111");
         //when
         ResponseEntity<ResponseDto> responseEntity = authServiceImpl.userSignUpAndSendEmail(dto);
