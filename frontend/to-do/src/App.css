@@ -57,7 +57,7 @@ main {
     padding: 10px 20px;
     border: none;
     border-radius: 25px; /* 둥근 모서리로 부드럽게 만듦 */
-    background: #4A90E2;
+    background: #6D9EEB;
     color: white;
     font-size: 1rem;
     font-weight: bold;
@@ -71,7 +71,7 @@ main {
     margin: 10px auto;
     border: none;
     border-radius: 25px; /* 둥근 모서리로 부드럽게 만듦 */
-    background: #4A90E2;
+    background: #6D9EEB;
     color: white;
     font-size: 1rem;
     font-weight: bold;
@@ -81,7 +81,7 @@ main {
 }
 
 .auth-button:hover {
-    background-color: #357ABD;
+    background-color: #5589CB;
 }
 
 .input-container input {
@@ -153,7 +153,6 @@ button:hover {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 10px;
 }
 
 .todo-board li {
@@ -173,12 +172,13 @@ button:hover {
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    background-color: #007BFF;
+    background-color: #4CAF50;
     color: white;
     font-weight: bold;
     transition: background-color 0.3s ease;
     margin-left: auto;
 }
+
 .todo-remove {
     padding: 8px 12px;
     border: none;
@@ -193,15 +193,15 @@ button:hover {
 }
 
 .todo-list button:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
 }
 
 .todo-list button:last-of-type {
-    background-color: #FF4B4B;
+    background-color: #f08080;
 }
 
 .todo-list button:last-of-type:hover {
-    background-color: #d63939;
+    background-color: #e57373;
 }
 
 .todo-list li {
@@ -310,6 +310,14 @@ h1 {
 .react-calendar__tile--now {
     background-color: #E6E6FA;
     color: #000;
+}
+
+.react-calendar__tile--now:enabled:hover {
+    background: #B0C4DE;
+}
+
+.react-calendar__tile--now:enabled:focus {
+    color: white
 }
 
 .login-form-container {
