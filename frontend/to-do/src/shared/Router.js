@@ -5,7 +5,6 @@ import LoginForm from "../pages/LoginForm";
 import AddToDo from "../pages/AddToDo";
 import SignUp from "../pages/SignUp";
 import UpdateToDo from "../pages/UpdateToDo";
-import RemoveToDo from "../pages/RemoveToDo";
 
 const Router = ({token, handleLogout, handleLoginSuccess}) => {
     return (
@@ -16,7 +15,6 @@ const Router = ({token, handleLogout, handleLoginSuccess}) => {
                 <Route path="/todo/add" element={<AddToDo token={token} handleLogout={handleLogout}/>}/>
                 <Route path="/signup" element={<SignUp/>}/>
                 <Route path="/todo/:listId/update" element={<UpdateToDo token={token} handleLogout={handleLogout}/>}/>
-                <Route path="/todo/:listId/remove" element={<RemoveToDo token={token}/>}/>
             </Routes>
         </BrowserRouter>
     )
