@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import todo.dto.request.todo.*;
 import todo.dto.response.ResponseDto;
 import todo.service.TodoService;
@@ -53,7 +50,7 @@ public class ToDoController {
         return todoService.addToDo(userToken, addToDoRequestDto);
     }
 
-    @PostMapping("/todo/update")
+    @PostMapping("/todo/{listId}/update")
     @Operation(summary = "할 일 수정", description = "할 일 수정 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "할 일 작성 완료", content = @Content),
@@ -63,8 +60,9 @@ public class ToDoController {
     })
     public ResponseEntity<ResponseDto> modifyToDo(
             @AuthenticationPrincipal UserToken userToken,
+            @PathVariable("listId") Long listId,
             @Valid @RequestBody ModifyToDoRequestDto modifyToDoRequestDto) {
-        return todoService.modifyToDo(userToken, modifyToDoRequestDto);
+        return todoService.modifyToDo(userToken, listId, modifyToDoRequestDto);
     }
 
     @PostMapping("/todo/complete")
@@ -95,7 +93,7 @@ public class ToDoController {
         return todoService.cancelCompleteToDo(userToken, cancelCompleteToDoRequestDto);
     }
 
-    @PostMapping("/todo/remove")
+    @PostMapping("/todo/{listId}/remove")
     @Operation(summary = "할 일 삭제", description = "할 일 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 완료", content = @Content),
@@ -105,8 +103,9 @@ public class ToDoController {
     })
     public ResponseEntity<ResponseDto> removeToDo(
             @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody RemoveToDoRequestDto removeToDoRequestDto) {
-        return todoService.removeToDo(userToken, removeToDoRequestDto);
+            @PathVariable("listId") Long listId
+    ) {
+        return todoService.removeToDo(userToken, listId);
     }
 
 }

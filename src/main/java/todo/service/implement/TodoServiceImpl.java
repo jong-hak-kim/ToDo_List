@@ -67,7 +67,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, ModifyToDoRequestDto dto) {
+    public ResponseEntity<ResponseDto> modifyToDo(UserToken userToken,Long listId, ModifyToDoRequestDto dto) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -83,7 +83,7 @@ public class TodoServiceImpl implements TodoService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getListId());
+            ToDoList toDoList = toDoListRepository.findToDoListByListId(listId);
             updateNonNullField(dto, toDoList);
 
             toDoListRepository.save(toDoList);
@@ -169,7 +169,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Transactional
     @Override
-    public ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveToDoRequestDto dto) {
+    public ResponseEntity<ResponseDto> removeToDo(UserToken userToken,Long listId) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -185,7 +185,7 @@ public class TodoServiceImpl implements TodoService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getListId());
+            ToDoList toDoList = toDoListRepository.findToDoListByListId(listId);
 
             if (toDoList == null) {
                 return ResponseMessage.NOT_EXIST_TODO;

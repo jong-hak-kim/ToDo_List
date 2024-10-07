@@ -12,8 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ModifyToDoRequestDto {
 
-    private Long listId;
-
     @NotBlank
     private String title;
 

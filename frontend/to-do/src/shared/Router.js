@@ -4,6 +4,8 @@ import Home from "../pages/Home";
 import LoginForm from "../pages/LoginForm";
 import AddToDo from "../pages/AddToDo";
 import SignUp from "../pages/SignUp";
+import UpdateToDo from "../pages/UpdateToDo";
+import RemoveToDo from "../pages/RemoveToDo";
 
 const Router = ({token, handleLogout, handleLoginSuccess}) => {
     return (
@@ -11,8 +13,10 @@ const Router = ({token, handleLogout, handleLoginSuccess}) => {
             <Routes>
                 <Route path="/" element={<Home token={token} handleLogout={handleLogout}/>}/>
                 <Route path="/login" element={<LoginForm token={token} handleLogout={handleLogout} handleLoginSuccess={handleLoginSuccess}/>}/>
-                <Route path="/ToDo/add" element={<AddToDo token={token} handleLogout={handleLogout}/>}/>
+                <Route path="/todo/add" element={<AddToDo token={token} handleLogout={handleLogout}/>}/>
                 <Route path="/signup" element={<SignUp/>}/>
+                <Route path="/todo/:listId/update" element={<UpdateToDo token={token} handleLogout={handleLogout}/>}/>
+                <Route path="/todo/:listId/remove" element={<RemoveToDo token={token}/>}/>
             </Routes>
         </BrowserRouter>
     )

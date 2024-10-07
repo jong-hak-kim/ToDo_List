@@ -75,6 +75,21 @@ const ToDoList = ({isLoggedIn, token}) => {
         }
     }
 
+    const handleDelete = async (listId) => {
+        try {
+            const response = await axios.post(`http://127.0.0.1:8080/todo/${listId}/remove`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            alert("할 일이 삭제되었습니다.")
+            console.log("할 일이 삭제되었습니다: ", response.data);
+            navigate(0)
+        } catch (error) {
+            console.error("Error remove todo: ", error);
+        }
+    }
+
     const handleCheckboxChange = (id, isChecked) => {
         if (isChecked) {
             completeToDo(id);
@@ -103,6 +118,14 @@ const ToDoList = ({isLoggedIn, token}) => {
                                 <span className={`todo-text ${todo.completionStatus ? 'completed' : ''}`}>
                                     {todo.title}
                                 </span>
+                                <button className={"todo-update"} onClick={() => {
+                                    navigate(`/todo/${todo.listId}/update`)
+                                }}>수정
+                                </button>
+                                <button className={"todo-remove"} onClick={() => {
+                                    handleDelete(todo.listId)
+                                }}>삭제
+                                </button>
                             </li>
                         ))}
                     </ul>

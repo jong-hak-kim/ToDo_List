@@ -9,13 +9,13 @@ public interface TodoService {
 
     ResponseEntity<ResponseDto> addToDo(UserToken userToken, AddToDoRequestDto dto);
 
-    ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, ModifyToDoRequestDto dto);
+    ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, Long listId, ModifyToDoRequestDto dto);
 
     ResponseEntity<ResponseDto> completeToDo(UserToken userToken, CompleteToDoRequestDto dto);
 
     ResponseEntity<ResponseDto> cancelCompleteToDo(UserToken userToken, CancelCompleteToDoRequestDto dto);
 
-    ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveToDoRequestDto dto);
+    ResponseEntity<ResponseDto> removeToDo(UserToken userToken, Long listId);
 
     ResponseEntity<ResponseDto> getToDoList(UserToken userToken);
 }

@@ -10,7 +10,6 @@ main {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    margin-top: 20px;
     width: 100%;
     gap: 40px;
 }
@@ -138,10 +137,11 @@ button:hover {
 
 .todo-text {
     font-family: 'Nanum Gothic', sans-serif;
-    font-size: 14px;
     color: #333;
     text-decoration: none; /* 기본 텍스트 스타일 */
     line-height: 1.2;
+    margin-right: 15px;
+    font-size: 16px;
 }
 
 .todo-text.completed {
@@ -165,6 +165,54 @@ button:hover {
     padding: 5px;
     margin-bottom: 2px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.todo-update {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-left: auto;
+}
+.todo-remove {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.todo-list button:hover {
+    background-color: #0056b3;
+}
+
+.todo-list button:last-of-type {
+    background-color: #FF4B4B;
+}
+
+.todo-list button:last-of-type:hover {
+    background-color: #d63939;
+}
+
+.todo-list li {
+    display: flex;
+    justify-content: flex-start; /* 기본 요소를 왼쪽에 정렬 */
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -323,6 +371,45 @@ h1 {
     width: 100%;
 }
 
+.update-todo-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.update-todo-page h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.update-todo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.update-todo-page input, textarea, select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.update-todo-button {
+    padding: 10px 20px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.update-todo-button:hover {
+    background-color: #357ABD;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
@@ -340,7 +427,6 @@ label {
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 100%;
 }
 
 textarea {
