@@ -8,10 +8,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import todo.dto.request.comment.AddCommentRequestDto;
+import todo.dto.request.comment.GetCommentRequestDto;
 import todo.dto.request.comment.ModifyCommentRequestDto;
 import todo.dto.request.comment.RemoveCommentRequestDto;
 import todo.dto.response.ResponseDto;
@@ -68,5 +67,19 @@ public class CommentController {
             @AuthenticationPrincipal UserToken userToken,
             @Valid @RequestBody RemoveCommentRequestDto removeCommentRequestDto) {
         return commentService.removeComment(userToken, removeCommentRequestDto);
+    }
+
+    @GetMapping("/todo/{listId}/comment")
+    @Operation(summary = "댓글 조회", description = "댓글 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "댓글 조회 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> getComment(
+            @AuthenticationPrincipal UserToken userToken,
+            @PathVariable("listId") Long listId) {
+        return commentService.getComment(userToken, listId);
     }
 }
