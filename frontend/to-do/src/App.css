@@ -120,13 +120,72 @@ button:hover {
 }
 
 .todo-item {
-    width: 500px;
-    display: flex;
-    align-items: center;
-    background-color: white;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
     padding: 5px;
     margin-bottom: 2px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comment-list {
+    list-style-type: none;
+}
+
+.comment-body {
+    width: 100%
+}
+
+.comments-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #e9e9e9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.comment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: gray;
+    margin-top: 5px;
+    width: 100%;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+.comment-actions button {
+    padding: 3px 7px;
+    font-size: 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.comment-actions button:first-of-type {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.comment-actions button:last-of-type {
+    background-color: #ffadad;
+    color: white;
+}
+
+.comment-actions button:hover {
+    opacity: 0.8; /* 호버 시 약간 어둡게 */
+    transition: opacity 0.2s ease;
 }
 
 .todo-checkbox {
@@ -144,6 +203,10 @@ button:hover {
     font-size: 16px;
 }
 
+ul.comments-list {
+    padding-inline-start: 0 !important; /* padding 강제로 제거 */
+}
+
 .todo-text.completed {
     text-decoration: line-through; /* 체크된 경우 텍스트에 취소선 추가 */
     color: gray; /* 완료된 항목은 회색으로 변경 */
@@ -157,7 +220,6 @@ button:hover {
 
 .todo-board li {
     list-style: none;
-    width: 500px;
     display: flex;
     align-items: center;
     background-color: white;
@@ -166,13 +228,22 @@ button:hover {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.todo-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.todo-actions {
+    margin-left: auto;
+}
+
 .todo-update {
-    padding: 8px 12px;
+    padding: 6px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    background-color: #4CAF50;
+    font-size: 12px;
     color: white;
     font-weight: bold;
     transition: background-color 0.3s ease;
@@ -180,28 +251,30 @@ button:hover {
 }
 
 .todo-remove {
-    padding: 8px 12px;
+    padding: 6px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    background-color: #007BFF;
+    font-size: 12px;
     color: white;
     font-weight: bold;
     transition: background-color 0.3s ease;
-    margin-left: 10px;
+    margin-left: 5px;
 }
 
-.todo-list button:hover {
-    background-color: #45a049;
+
+.todo-list button:first-of-type {
+    background-color: #4CAF50;
+    color: white;
 }
 
 .todo-list button:last-of-type {
     background-color: #f08080;
 }
 
-.todo-list button:last-of-type:hover {
-    background-color: #e57373;
+.todo-list button:hover {
+    opacity: 0.8; /* 호버 시 약간 어둡게 */
+    transition: opacity 0.2s ease;
 }
 
 .todo-list li {
