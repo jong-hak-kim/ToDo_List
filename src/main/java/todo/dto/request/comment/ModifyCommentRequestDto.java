@@ -9,12 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ModifyCommentRequestDto {
 
-    @NotNull
-    private Long toDoListId;
-
-    @NotNull
-    private Long commentId;
-
     @NotBlank
     private String content;
 }

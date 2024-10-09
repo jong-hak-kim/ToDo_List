@@ -9,13 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.comment.AddCommentRequestDto;
-import todo.dto.request.comment.GetCommentRequestDto;
 import todo.dto.request.comment.ModifyCommentRequestDto;
-import todo.dto.request.comment.RemoveCommentRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.comment.GetCommentListFilterDto;
 import todo.dto.response.comment.GetCommentResponseDto;
-import todo.dto.response.todo.GetToDoListFilterDto;
 import todo.entity.Comment;
 import todo.entity.ToDoList;
 import todo.entity.User;
@@ -25,6 +22,7 @@ import todo.repository.UserRepository;
 import todo.service.CommentService;
 import todo.util.UserToken;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static todo.common.constant.ErrorMessage.DATABASE_ERROR_LOG;
@@ -90,7 +88,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> modifyComment(UserToken userToken, ModifyCommentRequestDto dto) {
+    public ResponseEntity<ResponseDto> modifyComment(UserToken userToken, Long commentId, ModifyCommentRequestDto dto) {
         try {
 
             if (userToken == null) {
@@ -107,14 +105,9 @@ public class CommentServiceImpl implements CommentService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            ToDoList toDoList = toDoListRepository.findToDoListByListId(dto.getToDoListId());
-
-            if (toDoList == null) {
-                return ResponseMessage.NOT_EXIST_TODO;
-            }
-
-            Comment comment = commentRepository.findCommentByCommentId(dto.getCommentId());
+            Comment comment = commentRepository.findCommentByCommentId(commentId);
             comment.setContent(dto.getContent());
+            comment.setCreationDate(LocalDateTime.now());
 
             commentRepository.save(comment);
 
@@ -128,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> removeComment(UserToken userToken, RemoveCommentRequestDto dto) {
+    public ResponseEntity<ResponseDto> removeComment(UserToken userToken, Long commentId) {
         try {
 
             if (userToken == null) {
@@ -145,7 +138,7 @@ public class CommentServiceImpl implements CommentService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            Comment comment = commentRepository.findCommentByCommentId(dto.getCommentId());
+            Comment comment = commentRepository.findCommentByCommentId(commentId);
 
             if (comment == null) {
                 return ResponseMessage.NOT_EXIST_COMMENT;
@@ -154,13 +147,13 @@ public class CommentServiceImpl implements CommentService {
             user.removeComment(comment);
             comment.getToDoList().removeComment(comment);
 
-            List<Comment> childComments = commentRepository.findCommentsByParentCommentId(dto.getCommentId());
+            List<Comment> childComments = commentRepository.findCommentsByParentCommentId(commentId);
             for (Comment child : childComments) {
                 user.removeComment(child);
                 child.getToDoList().removeComment(child);
             }
 
-            commentRepository.deleteCommentsByParentCommentId(dto.getCommentId());
+            commentRepository.deleteCommentsByParentCommentId(commentId);
             commentRepository.delete(comment);
             return ResponseMessage.SUCCESS;
 
@@ -195,7 +188,7 @@ public class CommentServiceImpl implements CommentService {
 
             List<Comment> comments = commentRepository.findCommentsByToDoList(toDoList);
 
-            List<GetCommentListFilterDto> commentResponseList = comments.stream().map(comment -> new GetCommentListFilterDto(comment.getCommentId(), comment.getParentCommentId(), comment.getUser().getEmail(), comment.getContent())).toList();
+            List<GetCommentListFilterDto> commentResponseList = comments.stream().map(comment -> new GetCommentListFilterDto(comment.getCommentId(), comment.getParentCommentId(), comment.getUser().getEmail(), comment.getContent(), comment.getCreationDate())).toList();
 
             return ResponseEntity.status(HttpStatus.OK).body(new GetCommentResponseDto(commentResponseList));
 

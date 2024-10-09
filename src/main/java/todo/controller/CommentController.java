@@ -10,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import todo.dto.request.comment.AddCommentRequestDto;
-import todo.dto.request.comment.GetCommentRequestDto;
 import todo.dto.request.comment.ModifyCommentRequestDto;
-import todo.dto.request.comment.RemoveCommentRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.service.CommentService;
 import todo.util.UserToken;
@@ -41,7 +39,7 @@ public class CommentController {
         return commentService.addComment(userToken, addCommentRequestDto);
     }
 
-    @PostMapping("/todo/comment/modify")
+    @PostMapping("/todo/comment/{commentId}/modify")
     @Operation(summary = "댓글 수정", description = "댓글 수정 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "댓글 수정 완료", content = @Content),
@@ -51,11 +49,12 @@ public class CommentController {
     })
     public ResponseEntity<ResponseDto> modifyComment(
             @AuthenticationPrincipal UserToken userToken,
+            @PathVariable("commentId") Long commentId,
             @Valid @RequestBody ModifyCommentRequestDto modifyCommentRequestDto) {
-        return commentService.modifyComment(userToken, modifyCommentRequestDto);
+        return commentService.modifyComment(userToken, commentId, modifyCommentRequestDto);
     }
 
-    @PostMapping("/todo/comment/remove")
+    @PostMapping("/todo/comment/{commentId}/remove")
     @Operation(summary = "댓글 삭제", description = "댓글 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "댓글 삭제 완료", content = @Content),
@@ -65,8 +64,8 @@ public class CommentController {
     })
     public ResponseEntity<ResponseDto> removeComment(
             @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody RemoveCommentRequestDto removeCommentRequestDto) {
-        return commentService.removeComment(userToken, removeCommentRequestDto);
+            @PathVariable("commentId") Long commentId) {
+        return commentService.removeComment(userToken, commentId);
     }
 
     @GetMapping("/todo/{listId}/comment")

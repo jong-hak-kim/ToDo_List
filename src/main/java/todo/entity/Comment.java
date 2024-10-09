@@ -46,6 +46,10 @@ public class Comment {
         this.content = content;
     }
 
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public Comment(ToDoList toDoList, User user, Long parentCommentId, String content) {
         this.toDoList = toDoList;
         this.user = user;
