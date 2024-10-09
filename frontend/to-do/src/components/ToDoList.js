@@ -10,12 +10,19 @@ const ToDoList = ({isLoggedIn, token}) => {
     const [comments, setComments] = useState([]);
     const [user, setUser] = useState(null);
     const navigate = useNavigate()
+    const [editCommentId, setEditCommentId] = useState(null);
+    const [editCommentContent, setEditCommentContent] = useState("");
 
     useEffect(() => {
         if (token) {
             const decoded = jwtDecode(token);
             setUser(decoded);
             fetchToDoList()
+
+            const storedToDoId = localStorage.getItem("selectedToDoId")
+            if(storedToDoId) {
+                fetchComments(Number(storedToDoId))
+            }
         } else {
             setTodoList([])
             setLoading(false);
@@ -46,30 +53,70 @@ const ToDoList = ({isLoggedIn, token}) => {
             });
             setComments(response.data.comments); // 응답에서 댓글 데이터 설정
             setSelectedTodoId(todoId); // 선택된 할 일 ID 업데이트
+
+            localStorage.setItem("selectedToDoId", todoId)
         } catch (error) {
             console.error("Error fetching comments: ", error);
         }
     };
 
 
-    const handleEditComment = async (commentId) => {
-        // try {
-        //     const response = await axios.post(`http://127.0.0.1:8080/todo/${todoId}/comment`, {
-        //         headers: {
-        //             Authorization: `Bearer ${token}`
-        //         }
-        //     })
-        // }
+    const handleEditComment = (commentId, currentContent) => {
+        // 수정 모드로 전환하며, 수정할 댓글의 내용을 상태에 저장
+        setEditCommentId(commentId);
+        setEditCommentContent(currentContent);
+    };
 
-    }
+    const handleSaveEditComment = async (commentId) => {
+        try {
+            const response = await axios.post(`http://127.0.0.1:8080/todo/comment/${commentId}/modify`,
+                {content: editCommentContent},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
 
-    const handleDeleteComment = async (commenntId) => {
+            // 댓글 수정 성공 시 상태 업데이트
+            setComments(prevComments =>
+                prevComments.map(comment =>
+                    comment.commentId === commentId ? {...comment, content: editCommentContent} : comment
+                )
+            );
 
+            fetchComments(selectedTodoId);
+
+            setEditCommentId(null); // 수정 모드 종료
+            setEditCommentContent(""); // 수정 중인 내용 초기화
+
+            alert("댓글이 수정되었습니다.");
+            console.log("댓글이 수정되었습니다: ", response.data);
+        } catch (error) {
+            console.error("Error updating comment: ", error);
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            const response = await axios.post(`http://127.0.0.1:8080/todo/comment/${commentId}/remove`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            alert("댓글이 삭제되었습니다.")
+            console.log("댓글이 삭제되었습니다: ", response.data);
+            navigate(0)
+        } catch (error) {
+            console.error("Error deleting comments: ", error);
+        }
     }
 
     const handleToDoClick = (id) => {
         if (selectedTodoId === id) {
             setSelectedTodoId(null); // 이미 선택된 할 일이면 해제
+            localStorage.removeItem("selectedToDoId")
         } else {
             fetchComments(id); // 할 일 클릭 시 댓글 불러오기
         }
@@ -197,19 +244,33 @@ const ToDoList = ({isLoggedIn, token}) => {
                                                     <li key={comment.commentId}>
                                                         <div className="comment-body">
                                                             <div className="comment-header">
-                                                                <strong>{comment.email}:</strong> {comment.content}
+                                                                {editCommentId === comment.commentId ? (
+                                                                    <input
+                                                                        type="text"
+                                                                        value={editCommentContent}
+                                                                        onChange={(e) => setEditCommentContent(e.target.value)}
+                                                                        className="edit-comment-input"
+                                                                    />
+                                                                ) : (
+                                                                    <>
+                                                                        <strong>{comment.email}:</strong> {comment.content}
+                                                                    </>
+                                                                )}
                                                             </div>
                                                             <div className="comment-footer">
-                                                                <span
-                                                                    className="comment-time">{formatDate(comment.creationDate)}</span>
+                                                                {editCommentId !== comment.commentId && (
+                                                                    <span className="comment-time">{formatDate(comment.creationDate)}</span>
+                                                                )}
                                                                 {comment.email === user?.email && (
                                                                     <div className="comment-actions">
-                                                                        <button
-                                                                            onClick={() => handleEditComment(comment.commentId)}>수정
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={() => handleDeleteComment(comment.commentId)}>삭제
-                                                                        </button>
+                                                                        {editCommentId === comment.commentId ? (
+                                                                            <button onClick={() => handleSaveEditComment(comment.commentId)}>수정완료</button>
+                                                                        ) : (
+                                                                            <>
+                                                                                <button onClick={() => handleEditComment(comment.commentId, comment.content)}>수정</button>
+                                                                                <button onClick={() => handleDeleteComment(comment.commentId)}>삭제</button>
+                                                                            </>
+                                                                        )}
                                                                     </div>
                                                                 )}
                                                             </div>
