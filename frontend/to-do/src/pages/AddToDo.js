@@ -16,7 +16,7 @@ const AddToDo = ({token, handleLogout}) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [priority, setPriority] = useState("중간");
-    const [startDate, setStartDate] = useState(getTodayDate());
+    const [date, setDate] = useState(getTodayDate());
     const [repeatEndDate, setRepeatEndDate] = useState("")
 
     const navigate = useNavigate()
@@ -31,7 +31,7 @@ const AddToDo = ({token, handleLogout}) => {
             title,
             content,
             priority,
-            startDate,
+            date,
             repeatEndDate: checkRepeatEndDate
         }
 
@@ -91,9 +91,9 @@ const AddToDo = ({token, handleLogout}) => {
                         <label htmlFor="startDate">시작일</label>
                         <input
                             type="date"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
+                            id="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
                         />
                     </div>
                     <div className="form-group">

@@ -35,7 +35,11 @@ const SignUp = () => {
         formData.append("email", email);
         formData.append("password", password);
         formData.append("phoneNumber", phoneNumber);
-        formData.append("profileImg", profileImg);
+        if (profileImg) {
+            formData.append("profileImg", profileImg);
+        } else {
+            formData.append("profileImg", new Blob([], {type: 'image/jpeg'}));
+        }
 
 
         try {
@@ -87,7 +91,6 @@ const SignUp = () => {
                             type="file"
                             id="profileImg"
                             onChange={(e) => setProfileImg(e.target.files[0])}
-                            required
                         />
                     </div>
                     <div className="form-group">

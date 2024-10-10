@@ -20,7 +20,7 @@ const ToDoList = ({isLoggedIn, token}) => {
             fetchToDoList()
 
             const storedToDoId = localStorage.getItem("selectedToDoId")
-            if(storedToDoId) {
+            if (storedToDoId) {
                 fetchComments(Number(storedToDoId))
             }
         } else {
@@ -53,6 +53,7 @@ const ToDoList = ({isLoggedIn, token}) => {
             });
             setComments(response.data.comments); // 응답에서 댓글 데이터 설정
             setSelectedTodoId(todoId); // 선택된 할 일 ID 업데이트
+            setEditCommentContent('')
 
             localStorage.setItem("selectedToDoId", todoId)
         } catch (error) {
@@ -189,6 +190,27 @@ const ToDoList = ({isLoggedIn, token}) => {
         }
     };
 
+    const handleSaveNewComment = async (id) => {
+        try {
+            const newComment = {
+                toDoListId: id,
+                parentCommentId: null,
+                content: editCommentContent
+            }
+
+            const response = await axios.post(`http://127.0.0.1:8080/todo/comment`, newComment, {
+                headers: {
+                    Authorization: `Bearer ${token}` // 필요한 경우 Authorization 헤더 추가
+                }
+            });
+
+            fetchComments(id);
+            setEditCommentContent('')
+        } catch (error) {
+            console.error("Error save new comment", error)
+        }
+    }
+
     const formatDate = (dateString) => {
         const date = new Date(dateString)
         const year = date.getFullYear()
@@ -238,9 +260,9 @@ const ToDoList = ({isLoggedIn, token}) => {
                                         </div>
 
 
-                                        {selectedTodoId === todo.listId && comments.length > 0 && (
+                                        {selectedTodoId === todo.listId && (
                                             <ul className="comments-list">
-                                                {comments.map(comment => (
+                                                {comments.length > 0 && comments.map(comment => (
                                                     <li key={comment.commentId}>
                                                         <div className="comment-body">
                                                             <div className="comment-header">
@@ -259,25 +281,42 @@ const ToDoList = ({isLoggedIn, token}) => {
                                                             </div>
                                                             <div className="comment-footer">
                                                                 {editCommentId !== comment.commentId && (
-                                                                    <span className="comment-time">{formatDate(comment.creationDate)}</span>
+                                                                    <span
+                                                                        className="comment-time">{formatDate(comment.creationDate)}</span>
                                                                 )}
                                                                 {comment.email === user?.email && (
                                                                     <div className="comment-actions">
                                                                         {editCommentId === comment.commentId ? (
-                                                                            <button onClick={() => handleSaveEditComment(comment.commentId)}>수정완료</button>
+                                                                            <button
+                                                                                onClick={() => handleSaveEditComment(comment.commentId)}>수정완료</button>
                                                                         ) : (
                                                                             <>
-                                                                                <button onClick={() => handleEditComment(comment.commentId, comment.content)}>수정</button>
-                                                                                <button onClick={() => handleDeleteComment(comment.commentId)}>삭제</button>
+                                                                                <button
+                                                                                    onClick={() => handleEditComment(comment.commentId, comment.content)}>수정
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() => handleDeleteComment(comment.commentId)}>삭제
+                                                                                </button>
                                                                             </>
                                                                         )}
                                                                     </div>
                                                                 )}
                                                             </div>
                                                         </div>
-
                                                     </li>
                                                 ))}
+                                                <div className="new-comment">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="댓글을 입력하세요"
+                                                        value={editCommentContent} // 새로운 댓글 입력 상태로 설정
+                                                        onChange={(e) => setEditCommentContent(e.target.value)}
+                                                        className="new-comment-input"
+                                                    />
+                                                    <button className="new-comment-button" onClick={() => handleSaveNewComment(todo.listId)}>댓글
+                                                        추가
+                                                    </button>
+                                                </div>
                                             </ul>
                                         )}
                                     </div>

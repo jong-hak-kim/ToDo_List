@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Home from "../pages/Home";
 import LoginForm from "../pages/LoginForm";
@@ -7,6 +7,13 @@ import SignUp from "../pages/SignUp";
 import UpdateToDo from "../pages/UpdateToDo";
 
 const Router = ({token, handleLogout, handleLoginSuccess}) => {
+
+
+    useEffect(() => {
+        localStorage.removeItem("token");
+    }, []);
+
+
     return (
         <BrowserRouter>
             <Routes>
