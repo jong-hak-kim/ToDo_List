@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ToDoList {
     private String content;
 
     @Column(name = "date")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
@@ -46,7 +47,7 @@ public class ToDoList {
             , orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public ToDoList(User user, String title, String content, LocalDateTime date, String priority) {
+    public ToDoList(User user, String title, String content, LocalDate date, String priority) {
         this.user = user;
         this.title = title;
         this.content = content;
@@ -68,10 +69,6 @@ public class ToDoList {
         this.priority = priority;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
     public void setCompletionStatus(boolean completionStatus) {
         this.completionStatus = completionStatus;
     }
@@ -88,5 +85,9 @@ public class ToDoList {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

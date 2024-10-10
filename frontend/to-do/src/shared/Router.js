@@ -8,12 +8,6 @@ import UpdateToDo from "../pages/UpdateToDo";
 
 const Router = ({token, handleLogout, handleLoginSuccess}) => {
 
-
-    useEffect(() => {
-        localStorage.removeItem("token");
-    }, []);
-
-
     return (
         <BrowserRouter>
             <Routes>

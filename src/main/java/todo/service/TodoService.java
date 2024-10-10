@@ -17,5 +17,7 @@ public interface TodoService {
 
     ResponseEntity<ResponseDto> removeToDo(UserToken userToken, Long listId);
 
-    ResponseEntity<ResponseDto> getToDoList(UserToken userToken);
+    ResponseEntity<ResponseDto> getToDoList(UserToken userToken, String selectedDate);
+
+    ResponseEntity<ResponseDto> getOneToDoList(UserToken userToken, Long listId);
 }

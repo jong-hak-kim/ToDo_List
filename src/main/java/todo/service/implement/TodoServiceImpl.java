@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.todo.*;
 import todo.dto.response.ResponseDto;
+import todo.dto.response.todo.GetOneToDoListResponseDto;
 import todo.dto.response.todo.GetToDoListFilterDto;
 import todo.dto.response.todo.GetToDoListResponseDto;
 import todo.entity.ToDoList;
@@ -18,6 +19,7 @@ import todo.repository.UserRepository;
 import todo.service.TodoService;
 import todo.util.UserToken;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -53,8 +55,8 @@ public class TodoServiceImpl implements TodoService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            LocalDateTime startDate = dto.getDate().atTime(23, 59, 59);
-            LocalDateTime repeatEndDate = dto.getRepeatEndDate().atTime(23, 59, 59);
+            LocalDate startDate = dto.getDate();
+            LocalDate repeatEndDate = dto.getRepeatEndDate();
 
             while (!startDate.isAfter(repeatEndDate)) {
                 ToDoList todoList = new ToDoList(user, dto.getTitle(), dto.getContent(), startDate, dto.getPriority());
@@ -211,7 +213,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> getToDoList(UserToken userToken) {
+    public ResponseEntity<ResponseDto> getToDoList(UserToken userToken, String selectedDate) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -227,13 +229,43 @@ public class TodoServiceImpl implements TodoService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            List<ToDoList> toDoLists = toDoListRepository.findToDoListsByUser(user);
+            LocalDate date = LocalDate.parse(selectedDate);
+
+            List<ToDoList> toDoLists = toDoListRepository.findToDoListsByUserAndDate(user, date);
 
             List<GetToDoListFilterDto> todoResponseList = toDoLists.stream()
-                    .map(toDoList -> new GetToDoListFilterDto(toDoList.getListId(), toDoList.getTitle(), toDoList.isCompletionStatus()))
+                    .map(toDoList -> new GetToDoListFilterDto(toDoList.getListId(), toDoList.getTitle(), toDoList.getDate(), toDoList.isCompletionStatus()))
                     .toList();
 
             return ResponseEntity.status(HttpStatus.OK).body(new GetToDoListResponseDto(todoResponseList));
+
+        } catch (DataAccessException exception) {
+            log.error(DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> getOneToDoList(UserToken userToken, Long listId) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            if (!user.isActive()) {
+                return ResponseMessage.IS_NOT_ACTIVATE;
+            }
+
+            ToDoList toDoList = toDoListRepository.findToDoListByListId(listId);
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(new GetOneToDoListResponseDto(toDoList.getTitle(), toDoList.getContent(), toDoList.getPriority(), toDoList.getDate()));
 
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
@@ -245,6 +277,6 @@ public class TodoServiceImpl implements TodoService {
         Optional.ofNullable(dto.getTitle()).ifPresent(toDoList::setTitle);
         Optional.ofNullable(dto.getContent()).ifPresent(toDoList::setContent);
         Optional.ofNullable(dto.getPriority()).ifPresent(toDoList::setPriority);
-        Optional.ofNullable(dto.getDate()).ifPresent(date -> toDoList.setDate(date.atTime(23, 59, 59)));
+        Optional.ofNullable(dto.getDate()).ifPresent(toDoList::setDate);
     }
 }

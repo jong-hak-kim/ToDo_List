@@ -2,8 +2,9 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import {jwtDecode} from "jwt-decode"
+import moment from "moment/moment";
 
-const ToDoList = ({isLoggedIn, token}) => {
+const ToDoList = ({isLoggedIn, token, selectedDate}) => {
     const [loading, setLoading] = useState(true)
     const [todoList, setTodoList] = useState([])
     const [selectedTodoId, setSelectedTodoId] = useState(null);
@@ -12,12 +13,23 @@ const ToDoList = ({isLoggedIn, token}) => {
     const navigate = useNavigate()
     const [editCommentId, setEditCommentId] = useState(null);
     const [editCommentContent, setEditCommentContent] = useState("");
+    const [newCommentContent, setNewCommentContent] = useState("");
 
     useEffect(() => {
         if (token) {
-            const decoded = jwtDecode(token);
-            setUser(decoded);
-            fetchToDoList()
+            const storedToken = localStorage.getItem("token");
+            if (storedToken && !token) {
+                const decoded = jwtDecode(token);
+                setUser(decoded);
+                fetchToDoList(selectedDate)
+            } else if (token) {
+                const decoded = jwtDecode(token);
+                setUser(decoded);
+                fetchToDoList(selectedDate)
+            } else {
+                setTodoList([]);
+                setLoading(false)
+            }
 
             const storedToDoId = localStorage.getItem("selectedToDoId")
             if (storedToDoId) {
@@ -27,11 +39,11 @@ const ToDoList = ({isLoggedIn, token}) => {
             setTodoList([])
             setLoading(false);
         }
-    }, [token]);
+    }, [token, selectedDate]);
 
-    const fetchToDoList = async () => {
+    const fetchToDoList = async (selectedDate) => {
         try {
-            const response = await axios.get('http://127.0.0.1:8080/todo', {
+            const response = await axios.get(`http://127.0.0.1:8080/todo?date=${moment(selectedDate).format('YYYY-MM-DD')}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -53,7 +65,7 @@ const ToDoList = ({isLoggedIn, token}) => {
             });
             setComments(response.data.comments); // 응답에서 댓글 데이터 설정
             setSelectedTodoId(todoId); // 선택된 할 일 ID 업데이트
-            setEditCommentContent('')
+            setNewCommentContent('')
 
             localStorage.setItem("selectedToDoId", todoId)
         } catch (error) {
@@ -63,7 +75,6 @@ const ToDoList = ({isLoggedIn, token}) => {
 
 
     const handleEditComment = (commentId, currentContent) => {
-        // 수정 모드로 전환하며, 수정할 댓글의 내용을 상태에 저장
         setEditCommentId(commentId);
         setEditCommentContent(currentContent);
     };
@@ -176,7 +187,7 @@ const ToDoList = ({isLoggedIn, token}) => {
             })
             alert("할 일이 삭제되었습니다.")
             console.log("할 일이 삭제되었습니다: ", response.data);
-            navigate(0)
+            fetchToDoList(selectedDate)
         } catch (error) {
             console.error("Error remove todo: ", error);
         }
@@ -195,7 +206,7 @@ const ToDoList = ({isLoggedIn, token}) => {
             const newComment = {
                 toDoListId: id,
                 parentCommentId: null,
-                content: editCommentContent
+                content: newCommentContent
             }
 
             const response = await axios.post(`http://127.0.0.1:8080/todo/comment`, newComment, {
@@ -205,7 +216,7 @@ const ToDoList = ({isLoggedIn, token}) => {
             });
 
             fetchComments(id);
-            setEditCommentContent('')
+            setNewCommentContent('')
         } catch (error) {
             console.error("Error save new comment", error)
         }
@@ -222,7 +233,6 @@ const ToDoList = ({isLoggedIn, token}) => {
 
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
-
 
     return (
         <>
@@ -309,11 +319,12 @@ const ToDoList = ({isLoggedIn, token}) => {
                                                     <input
                                                         type="text"
                                                         placeholder="댓글을 입력하세요"
-                                                        value={editCommentContent} // 새로운 댓글 입력 상태로 설정
-                                                        onChange={(e) => setEditCommentContent(e.target.value)}
+                                                        value={newCommentContent} // 새로운 댓글 입력 상태로 설정
+                                                        onChange={(e) => setNewCommentContent(e.target.value)}
                                                         className="new-comment-input"
                                                     />
-                                                    <button className="new-comment-button" onClick={() => handleSaveNewComment(todo.listId)}>댓글
+                                                    <button className="new-comment-button"
+                                                            onClick={() => handleSaveNewComment(todo.listId)}>댓글
                                                         추가
                                                     </button>
                                                 </div>

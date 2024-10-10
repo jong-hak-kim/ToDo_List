@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
 import Header from "../components/Header";
@@ -18,23 +18,41 @@ const UpdateToDo = ({token, handleLogout}) => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [priority, setPriority] = useState("중간");
-    const [startDate, setStartDate] = useState(getTodayDate());
-    const [repeatEndDate, setRepeatEndDate] = useState("")
+    const [date, setDate] = useState(getTodayDate());
 
     const navigate = useNavigate()
 
+    useEffect(() => {
+        const fetchToDo = async () => {
+            try {
+                const response = await axios.get(`http://127.0.0.1:8080/todo/${listId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                const todoData = response.data;
+                setTitle(todoData.title);
+                setContent(todoData.content);
+                setPriority(todoData.priority);
+                setDate(todoData.date);
+
+            } catch (error) {
+                console.error("Error fetching todo data:", error);
+            }
+        };
+
+        fetchToDo();
+    }, [listId, token]);
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-
-        const checkRepeatEndDate = repeatEndDate === "" ? getTodayDate() : repeatEndDate;
 
         const updateToDo = {
             title,
             content,
             priority,
-            startDate,
-            repeatEndDate: checkRepeatEndDate
+            date
         }
 
 
@@ -90,21 +108,12 @@ const UpdateToDo = ({token, handleLogout}) => {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label htmlFor="startDate">시작일</label>
+                        <label htmlFor="date">날짜</label>
                         <input
                             type="date"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="repeatEndDate">반복 종료일</label>
-                        <input
-                            type="date"
-                            id="repeatEndDate"
-                            value={repeatEndDate}
-                            onChange={(e) => setRepeatEndDate(e.target.value)}
+                            id="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
                         />
                     </div>
                     <button type="submit" className="update-todo-button">수정하기</button>

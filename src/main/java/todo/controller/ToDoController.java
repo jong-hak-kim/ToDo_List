@@ -31,9 +31,25 @@ public class ToDoController {
             @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
     })
     public ResponseEntity<ResponseDto> getToDoList(
-            @AuthenticationPrincipal UserToken userToken
+            @AuthenticationPrincipal UserToken userToken,
+            @RequestParam("date") String selectedDate
     ) {
-        return todoService.getToDoList(userToken);
+        return todoService.getToDoList(userToken, selectedDate);
+    }
+
+    @GetMapping("/todo/{listId}")
+    @Operation(summary = "할 일 단일 조회", description = "할 일 단일 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 조회 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> getOneToDoList(
+            @AuthenticationPrincipal UserToken userToken,
+            @PathVariable("listId") Long listId
+    ) {
+        return todoService.getOneToDoList(userToken, listId);
     }
 
     @PostMapping("/todo")
