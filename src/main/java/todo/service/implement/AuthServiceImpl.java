@@ -70,8 +70,7 @@ public class AuthServiceImpl implements AuthService {
 
             String profileImageUrl = saveFileUtil.saveFile(bytes, filename);
 
-            User user = !dto.getProfileImg().isEmpty() ?
-                    new User(dto.getEmail(), encodedPassword, profileImageUrl, dto.getPhoneNumber()) : new User(dto.getEmail(), encodedPassword, dto.getPhoneNumber());
+            User user = new User(dto.getEmail(), encodedPassword, profileImageUrl, dto.getPhoneNumber());
 
             user.setActive(false);
             sendVerificationEmail(dto.getEmail());

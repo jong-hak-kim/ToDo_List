@@ -20,7 +20,7 @@ public class ModifyToDoRequestDto {
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate startDate;
+    private LocalDate date;
 
     @NotBlank
     private String priority;

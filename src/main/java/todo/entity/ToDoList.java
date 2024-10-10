@@ -29,8 +29,8 @@ public class ToDoList {
     @Column(nullable = false)
     private String content;
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDateTime startDate;
+    @Column(name = "date")
+    private LocalDateTime date;
 
     @Column(name = "creation_date", nullable = false)
     private LocalDateTime creationDate;
@@ -41,22 +41,19 @@ public class ToDoList {
     @Column(nullable = false)
     private String priority;
 
-    @Column(name = "repeat_end_date")
-    private LocalDateTime repeatEndDate;
 
     @OneToMany(mappedBy = "toDoList", cascade = CascadeType.ALL
             , orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    public ToDoList(User user, String title, String content, LocalDateTime startDate, String priority, LocalDateTime repeatEndDate) {
+    public ToDoList(User user, String title, String content, LocalDateTime date, String priority) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.startDate = startDate;
+        this.date = date;
         this.creationDate = LocalDateTime.now();
         this.completionStatus = false;
         this.priority = priority;
-        this.repeatEndDate = repeatEndDate;
     }
 
     public void setTitle(String title) {
@@ -67,16 +64,12 @@ public class ToDoList {
         this.content = content;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
     public void setPriority(String priority) {
         this.priority = priority;
     }
 
-    public void setRepeatEndDate(LocalDateTime repeatEndDate) {
-        this.repeatEndDate = repeatEndDate;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public void setCompletionStatus(boolean completionStatus) {

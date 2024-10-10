@@ -18,6 +18,7 @@ import todo.repository.UserRepository;
 import todo.service.TodoService;
 import todo.util.UserToken;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,11 +53,18 @@ public class TodoServiceImpl implements TodoService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            ToDoList todoList = new ToDoList(user, dto.getTitle(), dto.getContent(), dto.getStartDate().atTime(23, 59, 59), dto.getPriority(), dto.getRepeatEndDate().atTime(23, 59, 59));
+            LocalDateTime startDate = dto.getDate().atTime(23, 59, 59);
+            LocalDateTime repeatEndDate = dto.getRepeatEndDate().atTime(23, 59, 59);
 
-            user.addToDoList(todoList);
+            while (!startDate.isAfter(repeatEndDate)) {
+                ToDoList todoList = new ToDoList(user, dto.getTitle(), dto.getContent(), startDate, dto.getPriority());
+                user.addToDoList(todoList);
+                toDoListRepository.save(todoList);
 
-            toDoListRepository.save(todoList);
+                startDate = startDate.plusDays(1);
+
+            }
+
             return ResponseMessage.SUCCESS;
 
         } catch (DataAccessException exception) {
@@ -67,7 +75,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> modifyToDo(UserToken userToken,Long listId, ModifyToDoRequestDto dto) {
+    public ResponseEntity<ResponseDto> modifyToDo(UserToken userToken, Long listId, ModifyToDoRequestDto dto) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -169,7 +177,7 @@ public class TodoServiceImpl implements TodoService {
 
     @Transactional
     @Override
-    public ResponseEntity<ResponseDto> removeToDo(UserToken userToken,Long listId) {
+    public ResponseEntity<ResponseDto> removeToDo(UserToken userToken, Long listId) {
         try {
             if (userToken == null) {
                 return ResponseMessage.TOKEN_NOT_FOUND;
@@ -237,7 +245,6 @@ public class TodoServiceImpl implements TodoService {
         Optional.ofNullable(dto.getTitle()).ifPresent(toDoList::setTitle);
         Optional.ofNullable(dto.getContent()).ifPresent(toDoList::setContent);
         Optional.ofNullable(dto.getPriority()).ifPresent(toDoList::setPriority);
-        Optional.ofNullable(dto.getStartDate()).ifPresent(startDate -> toDoList.setStartDate(startDate.atTime(23, 59, 59)));
-        Optional.ofNullable(dto.getRepeatEndDate()).ifPresent(repeatEndDate -> toDoList.setRepeatEndDate(repeatEndDate.atTime(23, 59, 59)));
+        Optional.ofNullable(dto.getDate()).ifPresent(date -> toDoList.setDate(date.atTime(23, 59, 59)));
     }
 }
