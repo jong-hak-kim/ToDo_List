@@ -15,6 +15,8 @@ import todo.dto.request.admin.*;
 import todo.dto.request.user.ResetPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.admin.AdminSignInResponseDto;
+import todo.dto.response.admin.GetUserListResponseDto;
+import todo.dto.response.admin.GetUserListfilterDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
 import todo.repository.ToDoListRepository;
@@ -185,6 +187,31 @@ public class AdminServiceImpl implements AdminService {
             emailService.sendRemoveUserToDo(toDoList.getUser().getEmail(), toDoList.getTitle(), dto.getReason());
 
             return ResponseMessage.SUCCESS;
+
+        } catch (DataAccessException exception) {
+            log.error(ErrorMessage.DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> getUser(UserToken userToken) {
+
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            if (!userToken.getRole().equals(ADMIN.getDescription())) {
+                return ResponseMessage.UNAUTHORIZED_TOKEN;
+            }
+
+            List<User> users = userRepository.findAll();
+
+            List<GetUserListfilterDto> filteredUser = users.stream().map(user -> new GetUserListfilterDto(user.getEmail(), user.getRole(), user.getPhoneNumber(), user.getDeactivationDate(), user.isActive())).toList();
+
+            return ResponseEntity.status(HttpStatus.OK).body(new GetUserListResponseDto(filteredUser));
 
         } catch (DataAccessException exception) {
             log.error(ErrorMessage.DATABASE_ERROR_LOG, exception);

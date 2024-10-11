@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -96,6 +97,18 @@ public class AdminController {
             @AuthenticationPrincipal UserToken userToken,
             @Valid @RequestBody RemoveUserToDoRequestDto removeUserToDoRequestDto) {
         return adminService.removeToDo(userToken, removeUserToDoRequestDto);
+    }
+
+    @GetMapping("/admin/user")
+    @Operation(summary = "유저 조회", description = "유저 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "유저 조회 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한 없음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> getUser(
+            @AuthenticationPrincipal UserToken userToken) {
+        return adminService.getUser(userToken);
     }
 
 }
