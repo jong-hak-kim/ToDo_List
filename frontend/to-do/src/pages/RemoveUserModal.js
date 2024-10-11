@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-const Modal = ({ isOpen, closeModal, onSubmit }) => {
+const RemoveUserModal = ({ isOpen, closeModal, onSubmit }) => {
     const [reason, setReason] = useState('');
 
     if (!isOpen) return null;
@@ -33,4 +33,4 @@ const Modal = ({ isOpen, closeModal, onSubmit }) => {
     );
 };
 
-export default Modal;
+export default RemoveUserModal;
