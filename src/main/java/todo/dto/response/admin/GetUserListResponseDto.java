@@ -10,9 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 public class GetUserListResponseDto extends ResponseDto {
 
-    List<GetUserListfilterDto> users;
+    List<GetUserListFilterDto> users;
 
-    public GetUserListResponseDto(List<GetUserListfilterDto> users) {
+    public GetUserListResponseDto(List<GetUserListFilterDto> users) {
         super("SU", "SUCCESS");
         this.users = users;
     }

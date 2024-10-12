@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class GetUserListfilterDto {
+public class GetUserListFilterDto {
 
     @NotBlank
     private String email;
@@ -27,7 +27,7 @@ public class GetUserListfilterDto {
     @JsonProperty("isActive")
     private boolean isActive;
 
-    public GetUserListfilterDto(String email, String role, String phoneNumber, LocalDateTime deactivationDate, boolean isActive) {
+    public GetUserListFilterDto(String email, String role, String phoneNumber, LocalDateTime deactivationDate, boolean isActive) {
         this.email = email;
         this.role = role;
         this.phoneNumber = phoneNumber;

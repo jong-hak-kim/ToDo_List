@@ -14,9 +14,8 @@ import todo.common.constant.ResponseMessage;
 import todo.dto.request.admin.*;
 import todo.dto.request.user.ResetPwdRequestDto;
 import todo.dto.response.ResponseDto;
-import todo.dto.response.admin.AdminSignInResponseDto;
-import todo.dto.response.admin.GetUserListResponseDto;
-import todo.dto.response.admin.GetUserListfilterDto;
+import todo.dto.response.admin.*;
+import todo.dto.response.todo.GetToDoListFilterDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
 import todo.repository.ToDoListRepository;
@@ -209,7 +208,7 @@ public class AdminServiceImpl implements AdminService {
 
             List<User> users = userRepository.findAll();
 
-            List<GetUserListfilterDto> filteredUser = users.stream().map(user -> new GetUserListfilterDto(user.getEmail(), user.getRole(), user.getPhoneNumber(), user.getDeactivationDate(), user.isActive())).toList();
+            List<GetUserListFilterDto> filteredUser = users.stream().map(user -> new GetUserListFilterDto(user.getEmail(), user.getRole(), user.getPhoneNumber(), user.getDeactivationDate(), user.isActive())).toList();
 
             return ResponseEntity.status(HttpStatus.OK).body(new GetUserListResponseDto(filteredUser));
 
@@ -218,6 +217,29 @@ public class AdminServiceImpl implements AdminService {
             return ResponseMessage.DATABASE_ERROR;
         }
 
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> getAllToDoList(UserToken userToken) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            if (!userToken.getRole().equals(ADMIN.getDescription())) {
+                return ResponseMessage.UNAUTHORIZED_TOKEN;
+            }
+
+            List<ToDoList> toDoLists = toDoListRepository.findAll();
+
+            List<GetAllToDoListFilterDto> filteredToDo = toDoLists.stream().map(toDoList -> new GetAllToDoListFilterDto(toDoList.getListId(), toDoList.getTitle(), toDoList.getUser().getEmail(), toDoList.getCreationDate(), toDoList.getDate())).toList();
+
+            return ResponseEntity.status(HttpStatus.OK).body(new GetAllToDoListResponseDto(filteredToDo));
+
+        } catch (DataAccessException exception) {
+            log.error(ErrorMessage.DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }
     }
 
     @Scheduled(fixedRate = 86400000)

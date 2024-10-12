@@ -18,4 +18,6 @@ public interface AdminService {
     ResponseEntity<ResponseDto> removeToDo(UserToken userToken, RemoveUserToDoRequestDto dto);
 
     ResponseEntity<ResponseDto> getUser(UserToken userToken);
+
+    ResponseEntity<ResponseDto> getAllToDoList(UserToken userToken);
 }
