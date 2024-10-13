@@ -7,6 +7,7 @@ import SignUp from "../pages/SignUp";
 import UpdateToDo from "../pages/UpdateToDo";
 import AdminLoginForm from "../pages/AdminLoginForm";
 import AdminPage from "../pages/AdminPage";
+import EmailVerification from "../pages/EmailVerification";
 
 const Router = ({token, handleLogout, handleLoginSuccess}) => {
 
@@ -20,6 +21,7 @@ const Router = ({token, handleLogout, handleLoginSuccess}) => {
                 <Route path="/todo/:listId/update" element={<UpdateToDo token={token} handleLogout={handleLogout}/>}/>
                 <Route path="/admin/login" element={<AdminLoginForm/>}/>
                 <Route path="/admin" element={<AdminPage/>}/>
+                <Route path="/email/verify" element={<EmailVerification/>}/>
             </Routes>
         </BrowserRouter>
     )

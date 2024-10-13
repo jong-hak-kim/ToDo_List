@@ -244,7 +244,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = UUIDUtil.generateUUID();
 
-        String verificationUrl = "http://127.0.0.1:8080/email/verify?token=" + token;
+        String verificationUrl = "http://127.0.0.1:3000/email/verify?token=" + token;
         saveVerificationToken(token, email);
         emailService.sendSignUpEmail(email, verificationUrl);
 
