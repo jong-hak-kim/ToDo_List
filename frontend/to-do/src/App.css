@@ -768,3 +768,13 @@ textarea {
     justify-content: space-between;
     margin-top: 20px;
 }
+
+.center-text {
+    text-align: center;
+}
+
+.title {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+}

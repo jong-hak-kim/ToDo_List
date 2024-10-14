@@ -20,4 +20,8 @@ public interface TodoService {
     ResponseEntity<ResponseDto> getToDoList(UserToken userToken, String selectedDate);
 
     ResponseEntity<ResponseDto> getOneToDoList(UserToken userToken, Long listId);
+
+    ResponseEntity<ResponseDto> getUser(UserToken userToken);
+
+    ResponseEntity<ResponseDto> getOtherToDoList(UserToken userToken, String selectedDate, String email);
 }

@@ -4,18 +4,30 @@ import {useNavigate} from "react-router-dom";
 function Header({isLoggedIn, handleLogout}) {
     const navigate = useNavigate()
 
+    const handleLogoutAndRedirect = () => {
+        handleLogout();
+        navigate("/");
+    };
+
     return (
         <header className="header">
             <h1
-                style={{cursor : "pointer"}}
+                style={{cursor: "pointer"}}
                 onClick={() => {
-                navigate("/")
-            }}>TaskMate</h1>
+                    navigate("/")
+                }}>TaskMate</h1>
             <div className="auth-buttons">
                 {isLoggedIn ? (
-                    <button onClick={handleLogout} className="auth-button">
-                        로그아웃
-                    </button>
+                    <>
+                        <button onClick={() => {
+                            navigate("/todo/search")
+                        }} className="auth-button">
+                            탐색
+                        </button>
+                        <button onClick={handleLogoutAndRedirect} className="auth-button">
+                            로그아웃
+                        </button>
+                    </>
                 ) : (
                     <>
                         <button onClick={() => {

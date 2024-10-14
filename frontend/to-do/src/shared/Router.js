@@ -8,6 +8,7 @@ import UpdateToDo from "../pages/UpdateToDo";
 import AdminLoginForm from "../pages/AdminLoginForm";
 import AdminPage from "../pages/AdminPage";
 import EmailVerification from "../pages/EmailVerification";
+import SearchToDo from "../pages/SearchToDo";
 
 const Router = ({token, handleLogout, handleLoginSuccess}) => {
 
@@ -22,6 +23,7 @@ const Router = ({token, handleLogout, handleLoginSuccess}) => {
                 <Route path="/admin/login" element={<AdminLoginForm/>}/>
                 <Route path="/admin" element={<AdminPage/>}/>
                 <Route path="/email/verify" element={<EmailVerification/>}/>
+                <Route path="/todo/search" element={<SearchToDo token={token} handleLogout={handleLogout}/>}/>
             </Routes>
         </BrowserRouter>
     )
