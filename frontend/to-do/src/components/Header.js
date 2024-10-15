@@ -1,8 +1,27 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
-function Header({isLoggedIn, handleLogout}) {
+function Header({isLoggedIn, token, handleLogout}) {
     const navigate = useNavigate()
+
+    const [profileImageUrl, setProfileImageUrl] = useState("");
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            axios.get("http://127.0.0.1:8080/profile_img", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    setProfileImageUrl(`data:image/png;base64,${response.data.profileImg}`);
+                })
+                .catch((error) => {
+                    console.error("Error fetching profile image:", error);
+                });
+        }
+    }, [isLoggedIn]);
 
     const handleLogoutAndRedirect = () => {
         handleLogout();
@@ -19,6 +38,19 @@ function Header({isLoggedIn, handleLogout}) {
             <div className="auth-buttons">
                 {isLoggedIn ? (
                     <>
+                        <img
+                            src={profileImageUrl}
+                            alt="프로필"
+                            className="profile-image"
+                            onClick={() => navigate("/mypage")}
+                            style={{
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                                cursor: "pointer",
+                                marginRight: "10px",
+                            }}
+                        />
                         <button onClick={() => {
                             navigate("/todo/search")
                         }} className="auth-button">

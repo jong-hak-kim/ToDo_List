@@ -52,4 +52,6 @@ public interface ResponseMessage {
 
     ResponseEntity<ResponseDto> IMAGE_UPLOAD_ERROR
             = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto("IE", "Image Upload Error"));
+    ResponseEntity<ResponseDto> GET_IMAGE_ERROR
+            = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto("GI", "Get Image Error"));
 }

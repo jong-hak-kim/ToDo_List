@@ -23,4 +23,5 @@ public interface AuthService {
 
     ResponseEntity<ResponseDto> removeUser(UserToken userToken);
 
+    ResponseEntity<ResponseDto> getUserImg(UserToken userToken);
 }

@@ -3,6 +3,7 @@ package todo.service.implement;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import todo.dto.request.user.SignUpRequestDto;
 import todo.dto.request.user.UserImgRequestDto;
 import todo.dto.request.user.UserPwdRequestDto;
 import todo.dto.response.ResponseDto;
+import todo.dto.response.admin.GetAllToDoListResponseDto;
+import todo.dto.response.user.GetUserImgResponseDto;
 import todo.dto.response.user.SignInResponseDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
@@ -26,6 +29,10 @@ import todo.service.EmailService;
 import todo.util.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.List;
 
 import static todo.common.constant.ErrorMessage.*;
@@ -237,6 +244,33 @@ public class AuthServiceImpl implements AuthService {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
         }
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> getUserImg(UserToken userToken) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            int lastSlashIndex = user.getProfileImg().lastIndexOf("/");
+            String url = user.getProfileImg().substring(lastSlashIndex + 1);
+            Path profileImg = Paths.get("src/main/resources/uploads/", url);
+            byte[] fileContent = Files.readAllBytes(profileImg);
+            String encodedString = Base64.getEncoder().encodeToString(fileContent);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new GetUserImgResponseDto(encodedString));
+        } catch (IOException exception){
+            log.error(GET_IMAGE_ERROR_LOG, exception);
+            return ResponseMessage.GET_IMAGE_ERROR;
+        }
+
     }
 
 

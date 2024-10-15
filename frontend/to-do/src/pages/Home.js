@@ -9,7 +9,7 @@ function Home({token, handleLogout}) {
 
     return (
         <main>
-            <Header isLoggedIn={!!token} handleLogout={handleLogout}/>
+            <Header isLoggedIn={!!token} token={token} handleLogout={handleLogout}/>
             <div className="container">
                 <br/>
                 <ToDoCalendar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
