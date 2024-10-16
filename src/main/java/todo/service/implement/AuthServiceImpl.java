@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import todo.common.constant.ResponseMessage;
 import todo.dto.request.user.SignInRequestDto;
 import todo.dto.request.user.SignUpRequestDto;
@@ -72,10 +73,16 @@ public class AuthServiceImpl implements AuthService {
 
             String encodedPassword = passwordUtil.encodePassword(dto.getPassword());
 
-            String filename = dto.getProfileImg().getOriginalFilename();
-            byte[] bytes = dto.getProfileImg().getBytes();
+            MultipartFile profileImg = dto.getProfileImg();
+            String profileImageUrl;
+            if (profileImg != null && !profileImg.isEmpty()) {
+                String filename = dto.getProfileImg().getOriginalFilename();
+                byte[] bytes = dto.getProfileImg().getBytes();
+                profileImageUrl = saveFileUtil.saveFile(bytes, filename);
+            } else {
+                profileImageUrl = "http://127.0.0.1:8080/default.png";
+            }
 
-            String profileImageUrl = saveFileUtil.saveFile(bytes, filename);
 
             User user = new User(dto.getEmail(), encodedPassword, profileImageUrl, dto.getPhoneNumber());
 
@@ -266,7 +273,7 @@ public class AuthServiceImpl implements AuthService {
             String encodedString = Base64.getEncoder().encodeToString(fileContent);
 
             return ResponseEntity.status(HttpStatus.OK).body(new GetUserImgResponseDto(encodedString));
-        } catch (IOException exception){
+        } catch (IOException exception) {
             log.error(GET_IMAGE_ERROR_LOG, exception);
             return ResponseMessage.GET_IMAGE_ERROR;
         }

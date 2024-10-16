@@ -37,8 +37,6 @@ const SignUp = () => {
         formData.append("phoneNumber", phoneNumber);
         if (profileImg) {
             formData.append("profileImg", profileImg);
-        } else {
-            formData.append("profileImg", new Blob([], {type: 'image/jpeg'}));
         }
 
 
