@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import todo.common.constant.ResponseMessage;
-import todo.dto.request.user.SignInRequestDto;
-import todo.dto.request.user.SignUpRequestDto;
-import todo.dto.request.user.UserImgRequestDto;
-import todo.dto.request.user.UserPwdRequestDto;
+import todo.dto.request.user.*;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.admin.GetAllToDoListResponseDto;
 import todo.dto.response.user.GetUserImgResponseDto;
@@ -74,15 +71,7 @@ public class AuthServiceImpl implements AuthService {
 
             String encodedPassword = passwordUtil.encodePassword(dto.getPassword());
 
-            MultipartFile profileImg = dto.getProfileImg();
-            String profileImageUrl;
-            if (profileImg != null && !profileImg.isEmpty()) {
-                String filename = dto.getProfileImg().getOriginalFilename();
-                byte[] bytes = dto.getProfileImg().getBytes();
-                profileImageUrl = saveFileUtil.saveFile(bytes, filename);
-            } else {
-                profileImageUrl = "http://127.0.0.1:8080/default.png";
-            }
+            String profileImageUrl = saveProfileImage(dto.getProfileImg());
 
 
             User user = new User(dto.getEmail(), encodedPassword, profileImageUrl, dto.getPhoneNumber());
@@ -174,15 +163,7 @@ public class AuthServiceImpl implements AuthService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            MultipartFile profileImg = dto.getImage();
-            String profileImageUrl;
-            if (profileImg != null && !profileImg.isEmpty()) {
-                String filename = dto.getImage().getOriginalFilename();
-                byte[] bytes = dto.getImage().getBytes();
-                profileImageUrl = saveFileUtil.saveFile(bytes, filename);
-            } else {
-                profileImageUrl = "http://127.0.0.1:8080/default.png";
-            }
+            String profileImageUrl = saveProfileImage(dto.getImage());
 
             user.setProfileImg(profileImageUrl);
             userRepository.save(user);
@@ -309,7 +290,60 @@ public class AuthServiceImpl implements AuthService {
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
             return ResponseMessage.DATABASE_ERROR;
-        }catch (IOException exception) {
+        } catch (IOException exception) {
+            log.error(GET_IMAGE_ERROR_LOG, exception);
+            return ResponseMessage.GET_IMAGE_ERROR;
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseDto> modifyProfile(UserToken userToken, UserProfileModifyRequestDto dto) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            boolean isModified = false; // 변경 사항이 있는지 확인하기 위한 플래그
+
+            if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isEmpty()) {
+                log.info(dto.getPhoneNumber());
+                user.setPhoneNumber(dto.getPhoneNumber());
+                isModified = true;
+            }
+
+            String profileImageUrl = saveProfileImage(dto.getProfileImg());
+            if (profileImageUrl != null) {
+                user.setProfileImg(profileImageUrl);
+                isModified = true;
+            }
+
+            if (dto.getCurrentPassword() != null && dto.getNewPassword() != null) {
+                if (!passwordUtil.matches(dto.getCurrentPassword(), user.getPassword())) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(new ResponseDto("현재 비밀번호가 일치하지 않습니다.", null));
+                }
+
+                user.setPassword(passwordUtil.encodePassword(dto.getNewPassword()));
+                isModified = true;
+            }
+
+            if (isModified) {
+                userRepository.save(user); // 변경된 사용자 정보를 저장
+            }
+
+            return ResponseMessage.SUCCESS;
+
+        } catch (DataAccessException exception) {
+            log.error(DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        } catch (IOException exception) {
             log.error(GET_IMAGE_ERROR_LOG, exception);
             return ResponseMessage.GET_IMAGE_ERROR;
         }
@@ -334,5 +368,18 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findUserByEmail(email);
         user.setActive(true);
         userRepository.save(user);
+    }
+
+    private String saveProfileImage(MultipartFile image) throws IOException {
+        MultipartFile profileImg = image;
+        String profileImageUrl;
+        if (profileImg != null && !profileImg.isEmpty()) {
+            String filename = image.getOriginalFilename();
+            byte[] bytes = image.getBytes();
+            profileImageUrl = saveFileUtil.saveFile(bytes, filename);
+        } else {
+            profileImageUrl = "http://127.0.0.1:8080/default.png";
+        }
+        return profileImageUrl;
     }
 }

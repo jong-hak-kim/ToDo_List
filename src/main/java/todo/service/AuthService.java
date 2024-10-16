@@ -2,10 +2,7 @@ package todo.service;
 
 import org.springframework.http.ResponseEntity;
 import todo.dto.request.admin.RemoveUserToDoRequestDto;
-import todo.dto.request.user.SignInRequestDto;
-import todo.dto.request.user.SignUpRequestDto;
-import todo.dto.request.user.UserImgRequestDto;
-import todo.dto.request.user.UserPwdRequestDto;
+import todo.dto.request.user.*;
 import todo.dto.response.ResponseDto;
 import todo.util.UserToken;
 
@@ -26,4 +23,6 @@ public interface AuthService {
     ResponseEntity<ResponseDto> getUserImg(UserToken userToken);
 
     ResponseEntity<ResponseDto> getUserProfile(UserToken userToken);
+
+    ResponseEntity<ResponseDto> modifyProfile(UserToken userToken, UserProfileModifyRequestDto dto);
 }

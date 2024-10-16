@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import todo.dto.request.user.SignInRequestDto;
-import todo.dto.request.user.SignUpRequestDto;
-import todo.dto.request.user.UserImgRequestDto;
-import todo.dto.request.user.UserPwdRequestDto;
+import todo.dto.request.user.*;
 import todo.dto.response.ResponseDto;
 import todo.service.AuthService;
 import todo.util.UserToken;
@@ -128,5 +125,20 @@ public class AuthController {
     public ResponseEntity<ResponseDto> getUserProfile(
             @AuthenticationPrincipal UserToken userToken) {
         return authService.getUserProfile(userToken);
+    }
+
+    @PostMapping("/user/profile")
+    @Operation(summary = "프로필 정보 변경", description = "프로필 정보 변경 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 정보 변경 완료", content = @Content),
+            @ApiResponse(responseCode = "400", description = "기존 비밀번호 불일치", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
+            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> modifyProfile(
+            @AuthenticationPrincipal UserToken userToken,
+            @Valid @ModelAttribute UserProfileModifyRequestDto userProfileModifyRequestDto) {
+        return authService.modifyProfile(userToken, userProfileModifyRequestDto);
     }
 }

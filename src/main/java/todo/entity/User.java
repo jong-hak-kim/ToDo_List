@@ -80,6 +80,10 @@ public class User {
         this.profileImg = profileImg;
     }
 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public void addToDoList(ToDoList toDoList) {
         toDoLists.add(toDoList);
         toDoList.setUser(this);

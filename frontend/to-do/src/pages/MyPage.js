@@ -24,6 +24,10 @@ const MyPage = ({token, handleLogout}) => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        fetchUserProfile();
+    }, [token]);
+
+    const fetchUserProfile = () => {
         // 사용자 프로필 정보 가져오기
         axios
             .get("http://127.0.0.1:8080/user/profile", {
@@ -50,7 +54,7 @@ const MyPage = ({token, handleLogout}) => {
                     navigate("/login");
                 }
             });
-    }, [token]);
+    }
 
     const handlePhoneInputChange = (e, setPhone, nextInputRef, maxLength) => {
         const value = e.target.value;
@@ -87,7 +91,7 @@ const MyPage = ({token, handleLogout}) => {
         }
 
         try {
-            const response = await axios.put(
+            const response = await axios.post(
                 "http://127.0.0.1:8080/user/profile",
                 formData,
                 {
@@ -105,6 +109,10 @@ const MyPage = ({token, handleLogout}) => {
             setCurrentPassword("");
             setNewPassword("");
             setConfirmNewPassword("");
+
+            fetchUserProfile();
+            window.location.reload();
+
         } catch (error) {
             console.error("Error updating profile:", error);
             if (error.response && error.response.data && error.response.data.message) {
@@ -112,6 +120,20 @@ const MyPage = ({token, handleLogout}) => {
             } else {
                 alert("프로필 업데이트 중 오류가 발생했습니다.");
             }
+        }
+    };
+
+    const handleProfileImgChange = (e) => {
+        const file = e.target.files[0];
+        setNewProfileImg(file);
+
+        // 미리보기 이미지 설정
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setProfileImg(imageUrl);
+        } else {
+            // 파일이 없을 경우 기본 이미지로 설정
+            setProfileImg(profileImg);
         }
     };
 
@@ -209,7 +231,7 @@ const MyPage = ({token, handleLogout}) => {
                         <input
                             type="file"
                             id="profileImg"
-                            onChange={(e) => setNewProfileImg(e.target.files[0])}
+                            onChange={handleProfileImgChange}
                         />
                     </div>
 
