@@ -118,4 +118,15 @@ public class AuthController {
         return authService.getUserImg(userToken);
     }
 
+    @GetMapping("/user/profile")
+    @Operation(summary = "프로필 정보 조회", description = "프로필 정보 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 정보 조회 완료", content = @Content),
+            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
+            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content)
+    })
+    public ResponseEntity<ResponseDto> getUserProfile(
+            @AuthenticationPrincipal UserToken userToken) {
+        return authService.getUserProfile(userToken);
+    }
 }

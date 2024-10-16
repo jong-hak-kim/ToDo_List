@@ -17,7 +17,8 @@ const Router = ({token, handleLogout, handleLoginSuccess}) => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home token={token} handleLogout={handleLogout}/>}/>
-                <Route path="/login" element={<LoginForm token={token} handleLogout={handleLogout} handleLoginSuccess={handleLoginSuccess}/>}/>
+                <Route path="/login" element={<LoginForm token={token} handleLogout={handleLogout}
+                                                         handleLoginSuccess={handleLoginSuccess}/>}/>
                 <Route path="/todo/add" element={<AddToDo token={token} handleLogout={handleLogout}/>}/>
                 <Route path="/signup" element={<SignUp/>}/>
                 <Route path="/todo/:listId/update" element={<UpdateToDo token={token} handleLogout={handleLogout}/>}/>

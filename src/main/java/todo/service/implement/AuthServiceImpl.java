@@ -18,6 +18,7 @@ import todo.dto.request.user.UserPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.admin.GetAllToDoListResponseDto;
 import todo.dto.response.user.GetUserImgResponseDto;
+import todo.dto.response.user.GetUserProfileResponseDto;
 import todo.dto.response.user.SignInResponseDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
@@ -173,10 +174,15 @@ public class AuthServiceImpl implements AuthService {
                 return ResponseMessage.IS_NOT_ACTIVATE;
             }
 
-            String filename = dto.getImage().getOriginalFilename();
-            byte[] bytes = dto.getImage().getBytes();
-
-            String profileImageUrl = saveFileUtil.saveFile(bytes, filename);
+            MultipartFile profileImg = dto.getImage();
+            String profileImageUrl;
+            if (profileImg != null && !profileImg.isEmpty()) {
+                String filename = dto.getImage().getOriginalFilename();
+                byte[] bytes = dto.getImage().getBytes();
+                profileImageUrl = saveFileUtil.saveFile(bytes, filename);
+            } else {
+                profileImageUrl = "http://127.0.0.1:8080/default.png";
+            }
 
             user.setProfileImg(profileImageUrl);
             userRepository.save(user);
@@ -278,6 +284,35 @@ public class AuthServiceImpl implements AuthService {
             return ResponseMessage.GET_IMAGE_ERROR;
         }
 
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> getUserProfile(UserToken userToken) {
+        try {
+            if (userToken == null) {
+                return ResponseMessage.TOKEN_NOT_FOUND;
+            }
+
+            User user = userRepository.findUserByEmail(userToken.getEmail());
+
+            if (user == null) {
+                return ResponseMessage.NOT_EXIST_USER;
+            }
+
+            int lastSlashIndex = user.getProfileImg().lastIndexOf("/");
+            String url = user.getProfileImg().substring(lastSlashIndex + 1);
+            Path profileImg = Paths.get("src/main/resources/uploads/", url);
+            byte[] fileContent = Files.readAllBytes(profileImg);
+            String encodedString = Base64.getEncoder().encodeToString(fileContent);
+
+            return ResponseEntity.status(HttpStatus.OK).body(new GetUserProfileResponseDto(user.getEmail(), user.getPhoneNumber(), encodedString));
+        } catch (DataAccessException exception) {
+            log.error(DATABASE_ERROR_LOG, exception);
+            return ResponseMessage.DATABASE_ERROR;
+        }catch (IOException exception) {
+            log.error(GET_IMAGE_ERROR_LOG, exception);
+            return ResponseMessage.GET_IMAGE_ERROR;
+        }
     }
 
 

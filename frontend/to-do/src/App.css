@@ -778,3 +778,45 @@ textarea {
     width: 100%;
     margin-top: 20px;
 }
+
+.my-page-container {
+    display: grid;
+    justify-content: center;
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.my-page-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.my-page-form input {
+    width: 100%;
+}
+
+.update-profile-button {
+    padding: 10px 20px;
+    background-color: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.update-profile-button:hover {
+    background-color: #357ABD;
+}
+
+.profile-image-preview {
+    display: block;
+    margin: 0 auto 10px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
