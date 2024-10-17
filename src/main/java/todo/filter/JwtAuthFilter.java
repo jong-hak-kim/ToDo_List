@@ -45,6 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UserToken userToken = jwtTokenUtil.validate(jwt);
 
             if (userToken == null) {
+                log.info("jwt : " + jwt);
                 log.error("Invalid JWT Token");
                 filterChain.doFilter(request, response);
                 return;

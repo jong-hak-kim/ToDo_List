@@ -137,6 +137,25 @@ const MyPage = ({token, handleLogout}) => {
         }
     };
 
+    const handleDeleteAccount = async () => {
+        const confirmed = window.confirm("정말로 회원 탈퇴를 하시겠습니까?");
+        if (!confirmed) return;
+
+        try {
+            await axios.post("http://127.0.0.1:8080/remove", null, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            alert("회원 탈퇴가 완료되었습니다.");
+            handleLogout(); // 로그아웃 처리
+            navigate("/login"); // 로그인 페이지로 이동
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            alert("회원 탈퇴 중 오류가 발생했습니다.");
+        }
+    };
+
     return (
         <main>
             <Header isLoggedIn={true} token={token} handleLogout={handleLogout}/>
@@ -235,9 +254,17 @@ const MyPage = ({token, handleLogout}) => {
                         />
                     </div>
 
-                    <button type="submit" className="update-profile-button">
-                        업데이트
-                    </button>
+                    <div className="form-actions">
+                        <button type="submit" className="update-profile-button">
+                            업데이트
+                        </button>
+                        <span
+                            className="delete-account-text"
+                            onClick={handleDeleteAccount}
+                        >
+                        회원 탈퇴
+                    </span>
+                    </div>
                 </form>
             </div>
         </main>

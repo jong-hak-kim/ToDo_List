@@ -820,3 +820,18 @@ textarea {
     border-radius: 50%;
     object-fit: cover;
 }
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.delete-account-text {
+    color: red;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+}

@@ -49,13 +49,13 @@ public class AuthServiceImpl implements AuthService {
     private final SaveFileUtil saveFileUtil;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil, TokenRepository tokenRepository, EmailService emailService, ToDoListRepository toDoListRepository1, SaveFileUtil saveFileUtil) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordUtil passwordUtil, JwtTokenUtil jwtTokenUtil, TokenRepository tokenRepository, EmailService emailService, ToDoListRepository toDoListRepository, SaveFileUtil saveFileUtil) {
         this.userRepository = userRepository;
         this.passwordUtil = passwordUtil;
         this.jwtTokenUtil = jwtTokenUtil;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
-        this.toDoListRepository = toDoListRepository1;
+        this.toDoListRepository = toDoListRepository;
         this.saveFileUtil = saveFileUtil;
     }
 
@@ -121,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<ResponseDto> userSignIn(SignInRequestDto dto) {
 
         try {
-
+            VerificationToken verificationToken;
             User user = userRepository.findUserByEmail(dto.getEmail());
 
             if (user == null) {
@@ -133,9 +133,17 @@ public class AuthServiceImpl implements AuthService {
             }
 
             if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
-                String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
-                log.info("generate Token : " + token);
-                return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, token));
+
+                boolean isExistToken = tokenRepository.existsByEmail(dto.getEmail());
+                if (isExistToken) {
+                    verificationToken = tokenRepository.findByEmail(dto.getEmail());
+                } else {
+                    String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+                    verificationToken = new VerificationToken(token, dto.getEmail());
+                    log.info("generate Token : {}", token);
+                }
+                tokenRepository.save(verificationToken);
+                return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, verificationToken.getToken()));
             }
         } catch (DataAccessException exception) {
             log.error(DATABASE_ERROR_LOG, exception);
