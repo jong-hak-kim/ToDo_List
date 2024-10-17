@@ -14,10 +14,6 @@ public interface AuthService {
 
     ResponseEntity<ResponseDto> userSignIn(SignInRequestDto dto);
 
-    ResponseEntity<ResponseDto> updateUserImg(UserToken token, UserImgRequestDto dto);
-
-    ResponseEntity<ResponseDto> updatePwd(UserToken token, UserPwdRequestDto dto);
-
     ResponseEntity<ResponseDto> removeUser(UserToken userToken);
 
     ResponseEntity<ResponseDto> getUserImg(UserToken userToken);

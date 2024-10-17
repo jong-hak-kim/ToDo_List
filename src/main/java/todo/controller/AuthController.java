@@ -61,35 +61,6 @@ public class AuthController {
         return authService.userSignIn(signInRequestDto);
     }
 
-    @PostMapping("/profile_img")
-    @Operation(summary = "프로필 사진 변경", description = "프로필 사진 변경 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "프로필 사진 변경 완료", content = @Content),
-            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
-            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content)
-    })
-    public ResponseEntity<ResponseDto> updateUserImg(
-            @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody UserImgRequestDto userImgRequestDto) {
-        return authService.updateUserImg(userToken, userImgRequestDto);
-    }
-
-    @PostMapping("/password")
-    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 API")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "비밀번호 변경 완료", content = @Content),
-            @ApiResponse(responseCode = "400", description = "기존 비밀번호 불일치", content = @Content),
-            @ApiResponse(responseCode = "401", description = "권한이 없는 유저", content = @Content),
-            @ApiResponse(responseCode = "404", description = "유저가 존재하지 않음", content = @Content),
-            @ApiResponse(responseCode = "500", description = "DB 에러", content = @Content)
-    })
-    public ResponseEntity<ResponseDto> updatePwd(
-            @AuthenticationPrincipal UserToken userToken,
-            @Valid @RequestBody UserPwdRequestDto userPwdRequestDto) {
-        log.info("Received token: {}", userToken);
-        return authService.updatePwd(userToken, userPwdRequestDto);
-    }
-
     @PostMapping("/remove")
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 API")
     @ApiResponses(value = {

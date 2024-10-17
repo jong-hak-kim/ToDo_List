@@ -153,66 +153,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> updateUserImg(UserToken userToken, UserImgRequestDto dto) {
-        try {
-
-
-            if (userToken == null) {
-                return ResponseMessage.TOKEN_NOT_FOUND;
-            }
-
-            User user = userRepository.findUserByEmail(dto.getEmail());
-            boolean existedUserEmail = userRepository.existsByEmail(userToken.getEmail());
-            if (!existedUserEmail || user == null) {
-                return ResponseMessage.NOT_EXIST_USER;
-            }
-
-            if (!user.isActive()) {
-                return ResponseMessage.IS_NOT_ACTIVATE;
-            }
-
-            String profileImageUrl = saveProfileImage(dto.getImage());
-
-            user.setProfileImg(profileImageUrl);
-            userRepository.save(user);
-            return ResponseMessage.SUCCESS;
-        } catch (DataAccessException exception) {
-            log.error(DATABASE_ERROR_LOG, exception);
-            return ResponseMessage.DATABASE_ERROR;
-        } catch (IOException exception) {
-            log.error(IMAGE_UPLOAD_ERROR_LOG, exception);
-            return ResponseMessage.IMAGE_UPLOAD_ERROR;
-        }
-    }
-
-    @Override
-    public ResponseEntity<ResponseDto> updatePwd(UserToken userToken, UserPwdRequestDto dto) {
-        try {
-
-            log.info("Received token: {}", userToken);
-            if (userToken == null) {
-                return ResponseMessage.TOKEN_NOT_FOUND;
-            }
-
-            User user = userRepository.findUserByEmail(userToken.getEmail());
-            if (!passwordUtil.matches(dto.getOriginalPwd(), user.getPassword())) {
-                return ResponseMessage.PASSWORD_CURRENT_INVALID;
-            }
-
-            String newPassword = passwordUtil.encodePassword(dto.getNewPwd());
-            user.setPassword(newPassword);
-
-            userRepository.save(user);
-
-            return ResponseMessage.SUCCESS;
-        } catch (DataAccessException exception) {
-            log.error(DATABASE_ERROR_LOG, exception);
-            return ResponseMessage.DATABASE_ERROR;
-        }
-
-    }
-
-    @Override
     @Transactional
     public ResponseEntity<ResponseDto> removeUser(UserToken userToken) {
         try {
