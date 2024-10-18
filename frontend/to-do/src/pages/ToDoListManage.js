@@ -47,6 +47,46 @@ const ToDoListManagement = () => {
         }
     };
 
+    // 할 일을 삭제하는 함수
+    const handleDelete = async (listId) => {
+        const reason = window.prompt('삭제 이유를 입력하세요:'); // 삭제 이유 입력 받기
+
+        if (!reason || reason.trim() === '') {
+            alert('삭제 이유를 입력해야 합니다.');
+            return;
+        }
+
+        const token = localStorage.getItem('adminToken');
+
+        if (!token) {
+            setError('인증 토큰이 없습니다. 다시 로그인해주세요.');
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                'http://127.0.0.1:8080/admin/todo/remove',
+                {
+                    listId: listId,
+                    reason: reason,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.status === 200) {
+                alert('할 일이 성공적으로 삭제되었습니다.');
+                // 삭제된 항목을 리스트에서 제거
+                setToDoLists(toDoLists.filter((toDo) => toDo.listId !== listId));
+            }
+        } catch (error) {
+            alert('할 일 삭제에 실패했습니다.');
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         fetchToDoList();
     }, []);
@@ -80,7 +120,8 @@ const ToDoListManagement = () => {
                         <td>{formatDate(toDoList.creationDate)}</td>
                         <td>{toDoList.date}</td>
                         <td>
-                            <button>할 일 삭제
+                            <button
+                                onClick={() => handleDelete(toDoList.listId)}>할 일 삭제
                             </button>
                         </td>
                     </tr>
