@@ -1,7 +1,6 @@
 package todo.service;
 
 import org.springframework.http.ResponseEntity;
-import todo.dto.request.admin.RemoveUserToDoRequestDto;
 import todo.dto.request.user.*;
 import todo.dto.response.ResponseDto;
 import todo.util.UserToken;

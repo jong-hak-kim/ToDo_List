@@ -18,7 +18,6 @@ import todo.util.PasswordUtil;
 import todo.util.UUIDUtil;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static todo.common.constant.ErrorMessage.MESSAGING_ERROR;
 

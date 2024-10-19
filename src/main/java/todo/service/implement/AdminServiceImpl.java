@@ -15,7 +15,6 @@ import todo.dto.request.admin.*;
 import todo.dto.request.user.ResetPwdRequestDto;
 import todo.dto.response.ResponseDto;
 import todo.dto.response.admin.*;
-import todo.dto.response.todo.GetToDoListFilterDto;
 import todo.entity.ToDoList;
 import todo.entity.User;
 import todo.repository.ToDoListRepository;
