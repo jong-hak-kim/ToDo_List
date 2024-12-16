@@ -29,9 +29,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
+import static java.time.LocalDateTime.*;
 import static todo.common.constant.ErrorMessage.*;
 
 @Service
@@ -119,7 +122,6 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<ResponseDto> userSignIn(SignInRequestDto dto) {
 
         try {
-            VerificationToken verificationToken;
             User user = userRepository.findUserByEmail(dto.getEmail());
 
             if (user == null) {
@@ -132,15 +134,15 @@ public class AuthServiceImpl implements AuthService {
 
             if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
 
-                boolean isExistToken = tokenRepository.existsByEmail(dto.getEmail());
-                if (isExistToken) {
-                    verificationToken = tokenRepository.findByEmail(dto.getEmail());
-                } else {
+                VerificationToken verificationToken = tokenRepository.findByEmail(dto.getEmail())
+                        .orElse(null);
+
+                if (verificationToken == null || verificationToken.getExpireDate().isBefore(now())) {
                     String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
                     verificationToken = new VerificationToken(token, dto.getEmail());
                     log.info("generate Token : {}", token);
+                    tokenRepository.save(verificationToken);
                 }
-                tokenRepository.save(verificationToken);
                 return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, verificationToken.getToken()));
             }
         } catch (DataAccessException exception) {
@@ -174,8 +176,8 @@ public class AuthServiceImpl implements AuthService {
 
             user.getComments().clear();
 
-            VerificationToken verificationToken = tokenRepository.findByEmail(userToken.getEmail());
-            tokenRepository.delete(verificationToken);
+            Optional<VerificationToken> verificationToken = tokenRepository.findByEmail(userToken.getEmail());
+            tokenRepository.delete(verificationToken.get());
 
             userRepository.delete(user);
 
