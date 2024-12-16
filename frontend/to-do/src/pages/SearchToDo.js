@@ -9,7 +9,7 @@ function SearchToDo({token, handleLogout}) {
 
     return (
         <main>
-            <Header isLoggedIn={!!token} token={token}handleLogout={handleLogout}/>
+            <Header isLoggedIn={!!token} token={token} handleLogout={handleLogout}/>
             <div className="title">
                 <h2>탐색하기</h2>
             </div>

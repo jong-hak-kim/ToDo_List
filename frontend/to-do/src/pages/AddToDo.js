@@ -1,9 +1,9 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import Header from "../components/Header";
 
-const AddToDo = ({token, handleLogout}) => {
+const AddToDo = ({isLoggedIn, token, handleLogout}) => {
 
     const getTodayDate = () => {
         const today = new Date();
@@ -20,6 +20,24 @@ const AddToDo = ({token, handleLogout}) => {
     const [repeatEndDate, setRepeatEndDate] = useState("")
 
     const navigate = useNavigate()
+
+    const [profileImageUrl, setProfileImageUrl] = useState("");
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            axios.get("http://127.0.0.1:8080/profile_img", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    setProfileImageUrl(`data:image/png;base64,${response.data.profileImg}`);
+                })
+                .catch((error) => {
+                    console.error("Error fetching profile image:", error);
+                });
+        }
+    }, [isLoggedIn]);
 
 
     const handleSubmit = async (e) => {
@@ -52,7 +70,7 @@ const AddToDo = ({token, handleLogout}) => {
 
     return (
         <main>
-            <Header isLoggedIn={!!token} handleLogout={handleLogout}/>
+            <Header isLoggedIn={!!token} token={token} handleLogout={handleLogout}/>
             <div className="add-todo-page">
                 <h2>할 일 추가</h2>
                 <form onSubmit={handleSubmit} className="add-todo-form">
