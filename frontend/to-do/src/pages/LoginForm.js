@@ -38,7 +38,7 @@ const LoginForm = ({token, handleLogout, handleLoginSuccess}) => {
 
     return (
         <main>
-            <Header isLoggedIn={!!token} handleLogout={handleLogout}/>
+            <Header/>
 
             <div className="login-form-container">
                 <h2>로그인</h2>
@@ -63,6 +63,11 @@ const LoginForm = ({token, handleLogout, handleLoginSuccess}) => {
                             required
                         />
                     </div>
+                    <a id="find-password" onClick={() => {
+                        navigate("/find/password")
+                    }}>
+                        비밀번호 찾기
+                    </a>
                     {error && <p style={{color: "red"}}>{error}</p>}
                     <button type="submit" disabled={loading}>
                         {loading ? "로그인 중..." : "로그인"}

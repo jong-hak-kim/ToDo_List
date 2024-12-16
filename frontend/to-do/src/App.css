@@ -456,7 +456,7 @@ h1 {
 }
 
 .login-form-container div {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .login-form-container label {
@@ -473,13 +473,64 @@ h1 {
 .login-form-container button {
     width: 100%;
     padding: 10px;
-    background-color: aquamarine;
+    background-color: #909399;
     color: white;
     border: none;
     border-radius: 5px;
 }
 
+.login-form-container #find-password{
+
+    width: auto;
+    float: right;
+    background-color: white;
+    color: black;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
 .login-form-container button:disabled {
+    background-color: #ccc;
+}
+
+.find-password-container {
+    display: grid;
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.find-password-container h2 {
+    text-align: center;
+}
+
+.find-password-container div {
+    margin-bottom: 20px;
+}
+
+.find-password-container label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.find-password-container input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.find-password-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #909399;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.find-password-container button:disabled {
     background-color: #ccc;
 }
 

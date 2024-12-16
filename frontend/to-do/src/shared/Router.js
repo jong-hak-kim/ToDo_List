@@ -10,6 +10,7 @@ import AdminPage from "../pages/AdminPage";
 import EmailVerification from "../pages/EmailVerification";
 import SearchToDo from "../pages/SearchToDo";
 import MyPage from "../pages/MyPage";
+import FindPassword from "../pages/FindPassword"
 
 const Router = ({token, handleLogout, handleLoginSuccess}) => {
 
@@ -27,6 +28,7 @@ const Router = ({token, handleLogout, handleLoginSuccess}) => {
                 <Route path="/email/verify" element={<EmailVerification/>}/>
                 <Route path="/todo/search" element={<SearchToDo token={token} handleLogout={handleLogout}/>}/>
                 <Route path="/mypage" element={<MyPage token={token} handleLogout={handleLogout}/>}/>
+                <Route path="/find/password" element={<FindPassword/>}/>
             </Routes>
         </BrowserRouter>
     )
