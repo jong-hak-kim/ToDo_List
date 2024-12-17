@@ -135,14 +135,15 @@ public class AuthServiceImpl implements AuthService {
             if (passwordUtil.matches(dto.getPassword(), user.getPassword())) {
 
                 VerificationToken verificationToken = tokenRepository.findByEmail(dto.getEmail())
-                        .orElse(null);
+                        .filter(token -> !token.getExpireDate().isBefore(now()))
+                        .orElseGet(() -> {
+                            tokenRepository.findByEmail(dto.getEmail()).ifPresent(tokenRepository::delete);
+                            String newToken = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
+                            log.info("generate Token : {}", newToken);
+                            return new VerificationToken(newToken, dto.getEmail());
+                        });
 
-                if (verificationToken == null || verificationToken.getExpireDate().isBefore(now())) {
-                    String token = jwtTokenUtil.generateToken(user.getEmail(), user.getRole());
-                    verificationToken = new VerificationToken(token, dto.getEmail());
-                    log.info("generate Token : {}", token);
-                    tokenRepository.save(verificationToken);
-                }
+                tokenRepository.save(verificationToken);
                 return ResponseEntity.status(HttpStatus.OK).body(new SignInResponseDto(user, verificationToken.getToken()));
             }
         } catch (DataAccessException exception) {
